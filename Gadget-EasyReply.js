@@ -94,8 +94,8 @@ $(window).on('pageshow',function(){
 	}
 
 	function main() {
-		var currentPageName = mw.config.get( 'wgPageName' ).replace(/\/.*/, "");
-		if (! ( currentPageName === '위키백과:사랑방' || currentPageName === '위키백과:질문방' ) ) {
+		var currentPageName = mw.config.get( 'wgPageName' );
+		if (! ( /^위키백과:(사랑방|질문방)($|\/|#)/.test(currentPageName) ) ) {
 			return;
 		}
 		addMarginIcon();
