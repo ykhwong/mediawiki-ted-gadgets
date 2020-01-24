@@ -4,6 +4,16 @@
 * Please note that this is a beta version of the Easy-Reply.
 * 현재 사랑방/질문방에서만 사용 가능하도록 제한함.
 */
+
+const affectedPages = [
+	"위키백과:사랑방", "위키백과:사랑방_(기술)", "위키백과:사랑방_(전체)",
+	"위키백과:질문방", "위키백과:방명록", "위키백과:알찬_글_후보", "위키백과:좋은_글_후보", "위키백과:알찬_목록_후보",
+	"위키백과:함께_검토하기", "위키백과:위키프로젝트\/제안",
+	"위키백과:삭제_토론", "위키백과:복구_토론", "위키백과:관리자_알림판", "위키백과:봇_편집_요청",
+	"위키백과:문서_관리_요청", "위키백과:이동_요청", "위키백과:사용자_관리_요청", "위키백과:사용자_권한_신청",
+	"위키백과:다중_계정_검사_요청", "위키백과:봇\/등록_신청", "위키백과:파일_업로드_요청"
+];
+
 $(window).on('pageshow',function(){
 	function addMarginIcon() {
 		$(".mw-parser-output dd").each(function() {
@@ -93,14 +103,29 @@ $(window).on('pageshow',function(){
 		});
 	}
 
-	function main() {
-		var currentPageName = mw.config.get( 'wgPageName' );
-		if (! ( /^위키백과:(사랑방|질문방)($|\/|#)/.test(currentPageName) ) ) {
-			return;
-		}
+	function run() {
 		addMarginIcon();
 		addReplyIcon();
 		addReplyBox();
+	}
+
+	function main() {
+		var currentPageName = mw.config.get( 'wgPageName' );
+		var currentNamespace = mw.config.get( 'wgNamespaceNumber' );
+		
+		if (/^(1|3|5|7|9|11|13|15|101|103|119|829|2301|2303)$/.test(currentNamespace)) {
+			run();
+			return;
+		}
+
+		for (var i=0; i < affectedPages.length; i++) {
+			var page = affectedPages[i];
+			let re = new RegExp('^' + page + '$|\/|#');
+			if (re.exec(currentPageName)) {
+				run();
+				return;
+			}
+		}
 	}
 	main();
 }());
