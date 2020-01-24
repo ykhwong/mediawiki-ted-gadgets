@@ -120,7 +120,7 @@ $(window).on('pageshow',function(){
 
 		for (var i=0; i < affectedPages.length; i++) {
 			var page = affectedPages[i];
-			let re = new RegExp('^' + page + '$|\/|#');
+			var re = new RegExp('^' + page + '$|\/|#');
 			if (re.exec(currentPageName)) {
 				run();
 				return;
