@@ -2,7 +2,7 @@
 * EasyReply
 * @author ykhwong
 * Please note that this is a beta version of the Easy-Reply.
-* TO-DO: Needs to clean up
+* TO-DO: clean up
 */
 
 const affectedPages = [
@@ -223,8 +223,9 @@ $(window).on('pageshow',function(){
 
 		for (var i=0; i < affectedPages.length; i++) {
 			var page = affectedPages[i];
-			var re = new RegExp('^' + page + '$|\/|#');
-			if (re.exec(currentPageName)) {
+			var re = new RegExp('^' + page + '$|#');
+			if (currentPageName.startsWith(page + "/") ||
+			re.exec(currentPageName)) {
 				run();
 				return;
 			}
