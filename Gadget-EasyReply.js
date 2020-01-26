@@ -224,7 +224,7 @@ $(window).on('pageshow',function(){
 		for (var i=0; i < affectedPages.length; i++) {
 			var page = affectedPages[i];
 			var re = new RegExp('^' + page + '$|#');
-			if (currentPageName.startsWith(page + "/") ||
+			if (currentPageName.replace(/\\/g, "").startsWith(page + "/") ||
 			re.exec(currentPageName)) {
 				run();
 				return;
