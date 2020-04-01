@@ -36,7 +36,7 @@ function getDivText(html, target) {
 	return $(tag).find(target).text().trim();
 }
 
-function procDismiss(sitenoticeId) {
+function procDismiss() {
 	$("#siteNoticeLocal").prepend('<div class="mw-dismissable-notice-close2">' +
 		'<a tabindex="0" role="button"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/X-schliessen.svg/16px-X-schliessen.svg.png" title="' + dismissStr + '">' +
 		'</a></div>');
@@ -112,7 +112,7 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 				// If the user has the notice dismissal cookie set, exit.
 				if ( $.cookie( cookieName ) !== sitenoticeId ) {
 					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
-					procDismiss(sitenoticeId);
+					procDismiss();
 				}
 			}
 			return;
@@ -129,6 +129,7 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 			}
 		} else {
 			$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetAnonnotice + '</div>');
+			procDismiss();
 		}
 	});
 }
