@@ -105,7 +105,7 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 	$.get("/w/api.php?action=parse&format=json&page=" + noticeGrpPage, function(data) {
 		var html = data.parse.text["*"].replace("mw-parser-output", "mw-dismissable-notice");
 		var gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
-		var gadgetAnonnotice = html2text(getDivHtml(html, "#gadgetAnonnotice")).trim();
+		var gadgetAnonnotice = getDivHtml(html, "#gadgetAnonnotice");
 		sitenoticeId = getDivText(html, "#sitenoticeId");
 
 		if (mw.config.get('wgUserName') !== null) {
@@ -118,7 +118,7 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 			}
 			return;
 		}
-		if (gadgetAnonnotice.length === 0) {
+		if (html2text(gadgetAnonnotice).trim().length === 0) {
 			return;
 		} else if (/^\s*-\s*$/.test(gadgetAnonnotice)) {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
