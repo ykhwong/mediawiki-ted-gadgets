@@ -8,6 +8,7 @@
 $(function () {
 
 var cookieName = 'dismissNewSiteNotice';
+var sitenoticeId = '';
 var dismissStrLang = {
 	en: "Dismiss",
 	ko: "숨기기"
@@ -105,7 +106,7 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 		var html = data.parse.text["*"].replace("mw-parser-output", "mw-dismissable-notice");
 		var gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
 		var gadgetAnonnotice = html2text(getDivHtml(html, "#gadgetAnonnotice")).trim();
-		var sitenoticeId = getDivText(html, "#sitenoticeId");
+		sitenoticeId = getDivText(html, "#sitenoticeId");
 
 		if (mw.config.get('wgUserName') !== null) {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
