@@ -9,12 +9,8 @@ $(function () {
 
 var cookieName = 'dismissNewSiteNotice';
 var sitenoticeId = '';
-var dismissStrLang = {
-	en: "Dismiss",
-	ko: "숨기기"
-};
-var dismissStr = dismissStrLang.ko;
-var noticeGrpPage = '%EC%9C%84%ED%82%A4%EB%B0%B1%EA%B3%BC:%EC%86%8C%EB%8F%84%EA%B5%AC/noticeGrp'; // [[ko:Wikipedia:소도구/noticeGrp]]
+var dismissStr = "";
+var noticeGrpPage = '위키백과:소도구/noticeGrp';
 
 function html2text(html) {
 	var tag = document.createElement('div');
@@ -102,11 +98,17 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 	$(".noprint").html("");
 	$(".mw-jump-link").html("");
 } else {
-	$.get("/w/api.php?action=parse&format=json&page=" + noticeGrpPage, function(data) {
-		var html = data.parse.text["*"].replace("mw-parser-output", "mw-dismissable-notice");
-		var gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
-		var gadgetAnonnotice = getDivHtml(html, "#gadgetAnonnotice");
+	var api = new mw.Api();
+	api.parse(
+	    new mw.Title( noticeGrpPage )
+	).then( function( html ) {
+		var gadgetSiteNotice = "";
+		var gadgetAnonnotice = "";
+		html = html.replace("mw-parser-output", "mw-dismissable-notice");
+		gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
+		gadgetAnonnotice = getDivHtml(html, "#gadgetAnonnotice");
 		sitenoticeId = getDivText(html, "#sitenoticeId");
+		dismissStr = getDivText(html, "#dismissLabel"); 
 
 		if (mw.config.get('wgUserName') !== null) {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
