@@ -14,6 +14,44 @@ const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/
 const cookieExpires = 30;
 var sidebarHidden = false;
 var sidebarGadgetLoaded = false;
+var fadeSpeed=15;
+var lastTime = 0;
+var sDiv, timer;
+
+function autoHide() {
+	if( isMobile ) {
+		return;
+	}
+	sDiv = document.getElementById('sidebarCollapse').style;
+	sDiv.opacity = 0;
+	$(document).on('mousemove', function(e){
+		var thisTime = Math.round(+new Date()/1000);
+		if ((thisTime - lastTime) < 1) {
+			return;
+		}
+		lastTime = thisTime;
+		clearTimeout(timer);
+		(function fadeIn(){(
+			sDiv.opacity=parseFloat(sDiv.opacity)+0.1);
+			if (sDiv.opacity<1) {
+				setTimeout(fadeIn, fadeSpeed);
+			} else {
+				clearTimeout(timer);
+			}
+		})();
+		timer = setTimeout(function() {
+			(function fadeOut(){(
+				sDiv.opacity=parseFloat(sDiv.opacity)-0.1);
+				if (sDiv.opacity<0) {
+					clearTimeout(timer);
+				} else {
+					setTimeout(fadeOut, fadeSpeed);
+				}
+			})();
+			clearTimeout(timer);
+		}, 1500);
+	});
+}
 
 function hideSidebar() {
 	sidebarHidden = true;
@@ -150,6 +188,7 @@ function sidebarHiddenProc() {
 		hideSidebar();
 	}
 	updatePos();
+	autoHide();
 
 	$(window).resize(function() {
 		updatePos();
