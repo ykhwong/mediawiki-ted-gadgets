@@ -111,13 +111,7 @@ function updatePosHelper(arr) {
 }
 
 function updatePos() {
-	var bWidth = 0;
-	if( isMobile ) {
-		bWidth = (window.outerWidth > 0) ? window.outerWidth : $("body").width;
-	} else {
-		bWidth = (window.innerWidth > 0) ? window.innerWidth : $("body").width;
-	}
-	if (bWidth >= 965) {
+	if ($("#mw-panel").outerWidth() > 160) {
 		updatePosHelper(sidebarHidden ? ["20px", "30px", "70px"] : ["165px", null, null]);
 	} else {
 		updatePosHelper(sidebarHidden ? ["4px", "15px", "55px"] : ["149px", null, null]);
