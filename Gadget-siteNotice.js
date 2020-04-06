@@ -98,44 +98,42 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 	$(".noprint").html("");
 	$(".mw-jump-link").html("");
 } else {
-	mw.loader.using( 'mw.Api' ).then( function () {
-		var api = new mw.Api();
-		api.parse(
-		    new mw.Title( noticeGrpPage )
-		).then( function( html ) {
-			var gadgetSiteNotice = "";
-			var gadgetAnonnotice = "";
-			html = html.replace("mw-parser-output", "mw-dismissable-notice");
-			gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
-			gadgetAnonnotice = getDivHtml(html, "#gadgetAnonnotice");
-			sitenoticeId = getDivText(html, "#sitenoticeId");
-			dismissStr = getDivText(html, "#dismissLabel"); 
+	var api = new mw.Api();
+	api.parse(
+	    new mw.Title( noticeGrpPage )
+	).then( function( html ) {
+		var gadgetSiteNotice = "";
+		var gadgetAnonnotice = "";
+		html = html.replace("mw-parser-output", "mw-dismissable-notice");
+		gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
+		gadgetAnonnotice = getDivHtml(html, "#gadgetAnonnotice");
+		sitenoticeId = getDivText(html, "#sitenoticeId");
+		dismissStr = getDivText(html, "#dismissLabel"); 
 	
-			if (mw.config.get('wgUserName') !== null) {
-				if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
-					// If the user has the notice dismissal cookie set, exit.
-					if ( $.cookie( cookieName ) !== sitenoticeId ) {
-						$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
-						procDismiss();
-					}
+		if (mw.config.get('wgUserName') !== null) {
+			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
+				// If the user has the notice dismissal cookie set, exit.
+				if ( $.cookie( cookieName ) !== sitenoticeId ) {
+					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
+					procDismiss();
 				}
-				return;
 			}
-			if (html2text(gadgetAnonnotice).trim().length === 0) {
-				return;
-			} else if (/^\s*-\s*$/.test(gadgetAnonnotice)) {
-				if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
-					// If the user has the notice dismissal cookie set, exit.
-					if ( $.cookie( cookieName ) !== sitenoticeId ) {
-						$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
-						procDismiss();
-					}
+			return;
+		}
+		if (html2text(gadgetAnonnotice).trim().length === 0) {
+			return;
+		} else if (/^\s*-\s*$/.test(gadgetAnonnotice)) {
+			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
+				// If the user has the notice dismissal cookie set, exit.
+				if ( $.cookie( cookieName ) !== sitenoticeId ) {
+					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
+					procDismiss();
 				}
-			} else {
-				$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetAnonnotice + '</div>');
-				procDismiss();
 			}
-		});
+		} else {
+			$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetAnonnotice + '</div>');
+			procDismiss();
+		}
 	});
 }
 
