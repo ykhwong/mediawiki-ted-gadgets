@@ -122,7 +122,7 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 		}
 		if (html2text(gadgetAnonnotice).trim().length === 0) {
 			return;
-		} else if (/^\s*-\s*$/.test(gadgetAnonnotice)) {
+		} else if (/^\s*-\s*$/.test(html2text(gadgetAnonnotice).trim())) {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
 				// If the user has the notice dismissal cookie set, exit.
 				if ( $.cookie( cookieName ) !== sitenoticeId ) {
