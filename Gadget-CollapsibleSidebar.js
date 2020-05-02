@@ -25,7 +25,7 @@ function autoHide() {
 	sDiv = document.getElementById('sidebarCollapse').style;
 	sDiv.opacity = 0;
 	$(document).on('mousemove', function(e){
-		var thisTime = Math.round(+new Date()/1000);
+		var thisTime = Math.round(Date.now()/1000);
 		if ((thisTime - lastTime) < 1) {
 			return;
 		}
