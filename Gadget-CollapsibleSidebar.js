@@ -64,6 +64,12 @@ function hideSidebar() {
 		"right": "0px",
 		"margin-right": "-145px"
 	});
+	$("#mw-data-after-content").css({
+		"position": "relative",
+		"left": "-145px",
+		"right": "0px",
+		"margin-right": "-145px"
+	});
 	$("#footer").css({
 		"margin-left": "20px"
 	});
@@ -80,6 +86,12 @@ function showSidebar() {
 	updatePos();
 
 	$("#content").css({
+		"position": "static",
+		"left": "0px",
+		"right": "auto",
+		"margin-right": "0px"
+	});
+	$("#mw-data-after-content").css({
 		"position": "static",
 		"left": "0px",
 		"right": "auto",
