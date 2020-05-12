@@ -147,7 +147,7 @@ function sidebarHiddenProc() {
 		'float': 'right',
 		'width': '13px',
 		'height': '13px',
-		'top': '90px',
+		'top': '140px',
 		'cursor': 'pointer',
 		'padding': '5px',
 		'-webkit-border-radius': '50px',
@@ -155,7 +155,8 @@ function sidebarHiddenProc() {
 		'border-radius': '50px',
 		'text-align': 'center',
 		'border': '1px solid rgb(199, 238, 255)',
-		'background': 'white'
+		'background': 'white',
+		'z-index': '1'
 	});
 
 	newLink = $('<a />').attr({
