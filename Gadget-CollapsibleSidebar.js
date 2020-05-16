@@ -128,6 +128,10 @@ function updatePos() {
 	} else {
 		updatePosHelper(sidebarHidden ? ["4px", "15px", "55px"] : ["149px", null, null]);
 	}
+	if (mw.user.options.get("visualeditor-newwikitext") === "1") {
+		let menuloc = $(".oo-ui-toolbar").offset().top + $(".oo-ui-toolbar-bar").outerHeight(true);	
+		$("#sidebarCollapse").css("top", ( menuloc + 15 ) + "px");
+	}
 }
 
 function sidebarHiddenProc() {
@@ -156,7 +160,7 @@ function sidebarHiddenProc() {
 		'text-align': 'center',
 		'border': '1px solid rgb(199, 238, 255)',
 		'background': 'white',
-		'z-index': '1'
+		'z-index': '2'
 	});
 
 	newLink = $('<a />').attr({
@@ -242,5 +246,4 @@ function sidebarHiddenInit() {
 }
 
 sidebarHiddenInit();
-
 }());
