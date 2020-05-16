@@ -129,7 +129,7 @@ function updatePos() {
 		updatePosHelper(sidebarHidden ? ["4px", "15px", "55px"] : ["149px", null, null]);
 	}
 	if (mw.user.options.get("visualeditor-newwikitext") === "1") {
-		let menuloc = $(".oo-ui-toolbar").offset().top + $(".oo-ui-toolbar-bar").outerHeight(true);	
+		var menuloc = $(".oo-ui-toolbar").offset().top + $(".oo-ui-toolbar-bar").outerHeight(true);	
 		$("#sidebarCollapse").css("top", ( menuloc + 15 ) + "px");
 	}
 }
