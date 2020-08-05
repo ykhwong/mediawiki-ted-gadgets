@@ -23,6 +23,12 @@ $(function () {
 	$("#rcSidebar").html('<span style="font-weight: bold;">' + rcText + '</span><br />');
 
 	function refresh() {
+		if (document.hidden || document.msHidden || document.webkitHidden || document.mozHidden) {
+			setTimeout(function() {
+				refresh();
+			}, 1000);
+			return;
+		}
 		$.get('/wiki/%ED%8A%B9%EC%88%98:%EC%B5%9C%EA%B7%BC%EB%B0%94%EB%80%9C?hidebots=0&hidecategorization=0&hideWikibase=1&limit=15&days=7&urlversion=2', function (data) {
 			var special = $(data).find(".special");
 			$("#rcSidebar").html('<span style="font-weight: bold;">' + rcText + '</span><br />');
