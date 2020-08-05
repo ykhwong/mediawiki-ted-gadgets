@@ -21,6 +21,9 @@ $(function () {
 		"border": "solid #7ec9fc"
 	});
 	$("#rcSidebar").html('<span style="font-weight: bold;">' + rcText + '</span><br />');
+	if (localStorage['mw-recentchanges-sidebar']  !== undefined) {
+		$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
+	}
 
 	function refresh() {
 		if (document.hidden || document.msHidden || document.webkitHidden || document.mozHidden) {
@@ -36,11 +39,13 @@ $(function () {
 				var elem = $(this);
 				var targetPage = elem.find(".mw-changeslist-line-inner").data("target-page");
 				var changedDate = elem.find(".mw-changeslist-date").text();
-				$("#rcSidebar").append(
+				var info = 
 					'<a href="/wiki/' + targetPage + '">' +
 					targetPage + '</a>' +
 					'&nbsp;<span style="color:green; font-size:smaller;">' + changedDate + "</span>" +
-					"<br />");
+					"<br />";
+				localStorage['mw-recentchanges-sidebar'] = info;
+				$("#rcSidebar").append(info);
 			});
 			setTimeout(function() {
 				refresh();
