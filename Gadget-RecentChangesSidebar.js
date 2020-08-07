@@ -3,9 +3,11 @@
 * @author ykhwong
 */
 $(function () {
-	const rcText = "최근 바뀜";
+	var rcText = "";
+	const sidebarWidth = 250;
+	const sidebarHeight = 350;
 	if ($("#mw-sidebar-button").length === 0) {
-		$("#mw-content-text").css("margin-right", "270px");
+		$("#mw-content-text").css("margin-right", (sidebarWidth + 20) + "px");
 	}
 	$("body").append('<div id="rcSidebar"></div>');
 	$("#rcSidebar").css({
@@ -13,16 +15,19 @@ $(function () {
 		"float": "right",
 		"backgroundColor": "#b5e1ff",
 		"color": "black",
-		"width": "250px",
-		"height": "500px",
+		"width": sidebarWidth + "px",
+		"height": sidebarHeight + "px",
 		"top": "170px",
 		"right": "20px",
 		"padding": "3px",
 		"border": "solid #7ec9fc"
 	});
-	$("#rcSidebar").html('<span style="font-weight: bold;">' + rcText + '</span><br />');
 	if (localStorage['mw-recentchanges-sidebar']  !== undefined) {
-		$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
+		if (localStorage['mw-recentchanges-sidebar-tab1'] !== undefined) {
+			rcText = localStorage['mw-recentchanges-sidebar-tab1'];
+			$("#rcSidebar").html('<span style="font-weight: bold;">' + rcText + '</span><br />');
+			$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
+		}
 	}
 
 	function refresh() {
@@ -32,8 +37,10 @@ $(function () {
 			}, 1000);
 			return;
 		}
-		$.get('/wiki/%ED%8A%B9%EC%88%98:%EC%B5%9C%EA%B7%BC%EB%B0%94%EB%80%9C?hidebots=0&hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2', function (data) {
+		$.get('/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2', function (data) {
 			var special = $(data).find(".special");
+			rcText = $(data).find("#firstHeading").text();
+			localStorage['mw-recentchanges-sidebar-tab1'] = rcText;
 			$("#rcSidebar").html('<span style="font-weight: bold;">' + rcText + '</span><br />');
 			localStorage['mw-recentchanges-sidebar'] = "";
 			special.children().each(function() {
@@ -41,10 +48,10 @@ $(function () {
 				var targetPage = elem.find(".mw-changeslist-line-inner").data("target-page");
 				var changedDate = elem.find(".mw-changeslist-date").text();
 				var info = 
-					'<a href="/wiki/' + targetPage + '">' +
-					targetPage + '</a>' +
-					'&nbsp;<span style="color:green; font-size:smaller;">' + changedDate + "</span>" +
-					"<br />";
+					'<div style="display:inline-block; width: 200px; white-space: nowrap; overflow: hidden; vertical-align: text-top;"><a href="/wiki/' + targetPage + '">' +
+					targetPage + '</a></div>' +
+					'&nbsp;<div style="display:inline-block; white-space: nowrap; padding-left: 5px; color:green; font-size:smaller; vertical-align: text-top;">' + changedDate + "</div>" +
+					'<br />';
 				localStorage['mw-recentchanges-sidebar'] += info;
 				$("#rcSidebar").append(info);
 			});
