@@ -56,7 +56,7 @@ $(function () {
 				var targetPage = elem.find(".mw-changeslist-line-inner").data("target-page");
 				var changedDate = elem.find(".mw-changeslist-date").text();
 				var info = 
-					'<div style="display:inline-block; width: ' + (sidebarWidth - 50) + 'px; white-space: nowrap; overflow: hidden; vertical-align: text-top;"><a href="/wiki/' + targetPage + '">' +
+					'<div title="' + targetPage + '" style="display:inline-block; width: ' + (sidebarWidth - 50) + 'px; white-space: nowrap; overflow: hidden; vertical-align: text-top;"><a href="/wiki/' + targetPage + '">' +
 					targetPage + '</a></div>' +
 					'&nbsp;<div style="display:inline-block; white-space: nowrap; padding-left: 5px; color:green; font-size:smaller; vertical-align: text-top;">' + changedDate + "</div>" +
 					'<br />';
