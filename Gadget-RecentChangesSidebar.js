@@ -4,7 +4,6 @@
 */
 $(function () {
 	const sidebarWidth = 200;
-	const sidebarHeight = 350;
 	var rcText = "";
 	var rcSidebarStyle = {
 		"position": "fixed",
@@ -12,7 +11,6 @@ $(function () {
 		"backgroundColor": "#b5e1ff",
 		"color": "black",
 		"width": sidebarWidth + "px",
-		"height": sidebarHeight + "px",
 		"top": "200px",
 		"right": "20px",
 		"padding": "3px",
