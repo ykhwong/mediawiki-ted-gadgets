@@ -7,19 +7,19 @@ $(function () {
 	var rcText = "";
 	var rcSidebarStyle = {
 		"position": "absolute",
-		"backgroundColor": "#b5e1ff",
 		"color": "black",
 		"width": sidebarWidth + "px",
 		"top": "0px",
 		"right": "0px",
 		"padding": "3px",
-		"border": "solid 2px #7ec9fc"
+		"border": "solid 1px #c8ccd1"
 	};
 	var rcSidebarTabStyle = {
-		"backgroundColor": "#7ec9fc",
-		"width": "100%",
+		"backgroundColor": "#eaecf0",
+		"width": (sidebarWidth - 4) + "px",
 		"padding": "5px",
-		"margin": "-5px -5px 3px -5px"
+		"margin": "-4px 0px 0px -4px",
+		"border": "solid 1px #c8ccd1"
 	};
 	$("#mw-content-text").append('<div id="rcSidebar"></div>');
 	$("#rcSidebar").css(rcSidebarStyle);
