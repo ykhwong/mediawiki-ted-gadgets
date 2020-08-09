@@ -23,7 +23,8 @@ $(function () {
 	};
 	$("#mw-content-text").append('<div id="rcSidebar"></div>');
 	$("#rcSidebar").css(rcSidebarStyle);
-	if (mw.config.get("wgVectorDisableSidebarPersistence") === null || mw.config.get("wgNamespaceNumber") === -1) {
+	if (mw.config.get("wgVectorDisableSidebarPersistence") === null || mw.config.get("wgNamespaceNumber") === -1
+	|| mw.config.get("wgAction") === "history") {
 		$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
 	} else {
 		repos();
@@ -84,7 +85,8 @@ $(function () {
 		});
 	}
 	refresh();
-	if (mw.config.get("wgVectorDisableSidebarPersistence") !== null && mw.config.get("wgNamespaceNumber") !== -1) {
+	if (mw.config.get("wgVectorDisableSidebarPersistence") !== null && mw.config.get("wgNamespaceNumber") !== -1 &&
+	mw.config.get("wgAction") !== "history") {
 		$(window).resize(function() {
 			repos();
 		});
