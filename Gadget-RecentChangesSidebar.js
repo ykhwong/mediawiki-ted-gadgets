@@ -4,6 +4,7 @@
 */
 $(function () {
 	const sidebarWidth = 200;
+	const minHeight = 400;
 	var rcText = "";
 	var rcSidebarStyle = {
 		"position": "absolute",
@@ -21,7 +22,6 @@ $(function () {
 		"margin": "-4px 0px 0px -4px",
 		"border": "solid 1px #c8ccd1"
 	};
-	$("#mw-content-text").css("minHeight", "400px");
 	$("#mw-content-text").append('<div id="rcSidebar"></div>');
 	$("#rcSidebar").css(rcSidebarStyle);
 	if (mw.config.get("wgVectorDisableSidebarPersistence") === null || mw.config.get("wgNamespaceNumber") === -1
@@ -30,6 +30,7 @@ $(function () {
 		if (mw.config.get("wgCanonicalSpecialPageName") === "Search") {
 			$("#rcSidebar").css("margin-right", (-1 * sidebarWidth - 30) + "px");
 		}
+		$("#mw-content-text").css("minHeight", minHeight + "px");
 	} else {
 		repos();
 	}
@@ -50,9 +51,11 @@ $(function () {
 		if ($(".mw-workspace-container").outerWidth() < 1440) {
 			$("#rcSidebar").css("margin-right", "0px");
 			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
+			$("#mw-content-text").css("minHeight", minHeight + "px");
 		} else {
 			$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 90) + "px");
 			$("#mw-content-text").css("margin-right", "0px");
+			$("#mw-content-text").css("minHeight", "0px");
 		}
 	}
 
