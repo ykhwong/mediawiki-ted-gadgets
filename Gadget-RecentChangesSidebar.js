@@ -21,6 +21,7 @@ $(function () {
 		"margin": "-4px 0px 0px -4px",
 		"border": "solid 1px #c8ccd1"
 	};
+	$("#mw-content-text").css("minHeight", "400px");
 	$("#mw-content-text").append('<div id="rcSidebar"></div>');
 	$("#rcSidebar").css(rcSidebarStyle);
 	if (mw.config.get("wgVectorDisableSidebarPersistence") === null || mw.config.get("wgNamespaceNumber") === -1
