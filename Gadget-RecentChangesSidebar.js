@@ -23,7 +23,7 @@ $(function () {
 		"margin": "-5px -5px 3px -5px"
 	};
 	var rcSidebarCollapsed = false;
-	if ($("#mw-sidebar-button").length === 0) {
+	if (mw.config.get("wgVectorDisableSidebarPersistence") === null) {
 		$("#mw-content-text").css("margin-right", (sidebarWidth + 20) + "px");
 	}
 	$("body").append('<div id="rcSidebar"></div>');
@@ -69,7 +69,7 @@ $(function () {
 		});
 	}
 	refresh();
-	if ($("#mw-sidebar-button").length !== 0) {
+	if (mw.config.get("wgVectorDisableSidebarPersistence") !== null) {
 		$(window).resize(function() {
 			if (mw.config.get("wgNamespaceNumber") === -1) {
 				if ($("body").outerWidth() > 1885) {
