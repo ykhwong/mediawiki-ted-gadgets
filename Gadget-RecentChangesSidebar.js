@@ -27,6 +27,9 @@ $(function () {
 	if (mw.config.get("wgVectorDisableSidebarPersistence") === null || mw.config.get("wgNamespaceNumber") === -1
 	|| mw.config.get("wgAction") === "history") {
 		$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
+		if ($(".iw-resultset").length > 0) {
+			$("#rcSidebar").css("margin-right", (-1 * sidebarWidth - 30) + "px");
+		}
 	} else {
 		repos();
 	}
