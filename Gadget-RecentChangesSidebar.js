@@ -29,7 +29,7 @@ $(function () {
 		$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
 		if (mw.config.get("wgCanonicalSpecialPageName") === "Search") {
 			$("#rcSidebar").css("margin-right", (-1 * sidebarWidth - 30) + "px");
-		} else if (mw.config.get("wgCanonicalSpecialPageName") === "Contributions") {
+		} else if (/^(AbuseLog|AbuseFilter|Contributions)$/.test(mw.config.get("wgCanonicalSpecialPageName"))) {
 			$("#rcSidebar").css("top", "30px");
 		}
 		$("#mw-content-text").css("minHeight", minHeight + "px");
