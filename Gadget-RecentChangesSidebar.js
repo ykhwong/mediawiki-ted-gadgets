@@ -61,8 +61,18 @@ $(function () {
 		}
 	}
 
+	$.fn.isInViewport = function() {
+		var elementTop = $(this).offset().top;
+		var elementBottom = elementTop + $(this).outerHeight();
+	
+		var viewportTop = $(window).scrollTop();
+		var viewportBottom = viewportTop + $(window).height();
+
+		return elementBottom > viewportTop && elementTop < viewportBottom;
+	};
+
 	function refresh() {
-		if (document.hidden || document.msHidden || document.webkitHidden || document.mozHidden) {
+		if (!$("#rcSidebar").isInViewport() || document.hidden || document.msHidden || document.webkitHidden || document.mozHidden) {
 			setTimeout(function() {
 				refresh();
 			}, 1000);
