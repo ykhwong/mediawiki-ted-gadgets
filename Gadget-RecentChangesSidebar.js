@@ -24,6 +24,11 @@ $(function () {
 	};
 	$("#mw-content-text").append('<div id="rcSidebar"></div>');
 	$("#rcSidebar").css(rcSidebarStyle);
+	if (mw.config.get("wgVectorDisableSidebarPersistence") === null) {
+		if (mw.config.get("wgCoordinates") !== null) {
+			$("#rcSidebar").css("top", "43px");
+		}
+	}
 	if (mw.config.get("wgVectorDisableSidebarPersistence") === null || mw.config.get("wgNamespaceNumber") === -1
 	|| mw.config.get("wgAction") === "history") {
 		$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
