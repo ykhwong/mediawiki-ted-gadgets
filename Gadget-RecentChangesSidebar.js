@@ -8,6 +8,9 @@ $(function () {
 	const refreshRate = 10;
 	const isVector = ( mw.config.get("skin") === "vector" );
 	const isLegacyVector = ( mw.config.get("wgVectorDisableSidebarPersistence") === null );
+	var preMarginRight;
+	var preMinHeight;
+
 	var rcText = "";
 	var rcSidebarStyle = {
 		"position": "absolute",
@@ -146,9 +149,29 @@ $(function () {
 		});
 	}
 	refresh();
-	if ( isVector && !isLegacyVector && mw.config.get("wgNamespaceNumber") !== -1 && mw.config.get("wgAction") !== "history" ) {
+	if ( isVector ) {
+		preMarginRight = $("#mw-content-text").css("margin-right");
+		preMinHeight = $("#mw-content-text").css("minHeight");
 		$(window).resize(function() {
-			repos();
+			if ( !isLegacyVector && mw.config.get("wgNamespaceNumber") !== -1 && mw.config.get("wgAction") !== "history" && $("#rcSidebar").isInViewport() ) {
+				repos();
+			}
+			if ( $("#rcSidebar").isInViewport() ) {
+				preMarginRight = $("#mw-content-text").css("margin-right");
+				preMinHeight = $("#mw-content-text").css("minHeight");
+			}
+		});
+		$(window).scroll(function() {
+			if ( !$("#rcSidebar").isInViewport() ) {
+				$("#mw-content-text").css("margin-right", "0px");
+				$("#mw-content-text").css("minHeight", "0px");
+			} else {
+				$("#mw-content-text").css("margin-right", preMarginRight);
+				$("#mw-content-text").css("minHeight", preMinHeight);
+				if ( !isLegacyVector && mw.config.get("wgNamespaceNumber") !== -1 && mw.config.get("wgAction") !== "history" ) {
+					repos();
+				}
+			}
 		});
 	}
 
