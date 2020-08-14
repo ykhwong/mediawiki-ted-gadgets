@@ -5,6 +5,9 @@
 $(function () {
 	const sidebarWidth = 200;
 	const minHeight = 400;
+	const refreshRate = 10;
+	const isMobile = ( typeof(mw.mobileFrontend) !== "undefined" );
+	const isLegacyVector = ( mw.config.get("wgVectorDisableSidebarPersistence") === null );
 	var rcText = "";
 	var rcSidebarStyle = {
 		"position": "absolute",
@@ -15,40 +18,65 @@ $(function () {
 		"padding": "3px",
 		"border": "solid 1px #c8ccd1"
 	};
+	var rcSidebarMobileStyle = {
+		"position": "relative",
+		"color": "black",
+		"top": "0px",
+		"right": "0px",
+		"padding": "3px",
+		"overflow-x": "hidden !important"
+	};
 	var rcSidebarTabStyle = {
+		"position": "relative",
 		"backgroundColor": "#eaecf0",
 		"width": (sidebarWidth - 4) + "px",
 		"padding": "5px",
 		"margin": "-4px 0px 0px -4px",
 		"border": "solid 1px #c8ccd1"
 	};
-	$("#mw-content-text").append('<div id="rcSidebar"></div>');
-	$("#rcSidebar").css(rcSidebarStyle);
-	if (mw.config.get("wgVectorDisableSidebarPersistence") === null) {
-		if (mw.config.get("wgCoordinates") !== null) {
-			$("#rcSidebar").css("top", "43px");
-		}
-	}
-	if (mw.config.get("wgVectorDisableSidebarPersistence") === null || mw.config.get("wgNamespaceNumber") === -1
-	|| mw.config.get("wgAction") === "history") {
-		$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
-		if (mw.config.get("wgCanonicalSpecialPageName") === "Search") {
-			$("#rcSidebar").css("margin-right", (-1 * sidebarWidth - 30) + "px");
-		} else if (/^(AbuseLog|AbuseFilter|Contributions)$/.test(mw.config.get("wgCanonicalSpecialPageName"))) {
-			$("#rcSidebar").css("top", "30px");
-		}
-		$("#mw-content-text").css("minHeight", minHeight + "px");
+	var rcSidebarTabMobileStyle = {
+		"position": "relative",
+		"backgroundColor": "#eaecf0",
+		"padding-top": "5px",
+		"padding-bottom": "5px",
+		"margin": "0px",
+		"border-bottom": "solid 1px #c8ccd1",
+		"overflow-x": "hidden !important"
+	};
+
+	if ( isMobile ) {
+		$(".footer-content").append('<div id="rcSidebar"></div>');
+		$("#rcSidebar").css(rcSidebarMobileStyle);
 	} else {
-		repos();
+		$("#mw-content-text").append('<div id="rcSidebar"></div>');
+		$("#rcSidebar").css(rcSidebarStyle);
+
+		if ( isLegacyVector ) {
+			if (mw.config.get("wgCoordinates") !== null) {
+				$("#rcSidebar").css("top", "43px");
+			}
+		}
+		if ( isLegacyVector || mw.config.get("wgNamespaceNumber") === -1 || mw.config.get("wgAction") === "history" ) {
+			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
+			if (mw.config.get("wgCanonicalSpecialPageName") === "Search") {
+				$("#rcSidebar").css("margin-right", (-1 * sidebarWidth - 30) + "px");
+			} else if (/^(AbuseLog|AbuseFilter|Contributions)$/.test(mw.config.get("wgCanonicalSpecialPageName"))) {
+				$("#rcSidebar").css("top", "30px");
+			}
+			$("#mw-content-text").css("minHeight", minHeight + "px");
+		} else {
+			repos();
+		}
 	}
-	if (localStorage['mw-recentchanges-sidebar']  !== undefined) {
+
+	if ( localStorage['mw-recentchanges-sidebar']  !== undefined ) {
 		if (localStorage['mw-recentchanges-sidebar-tab1'] !== undefined) {
 			rcText = localStorage['mw-recentchanges-sidebar-tab1'];
 			addRcText();
 			$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
 		}
 	}
-	$(".rcSidebarTab").css(rcSidebarTabStyle);
+	$(".rcSidebarTab").css( isMobile ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
 
 	function addRcText() {
 		$("#rcSidebar").html('<div class="rcSidebarTab" style="font-weight: bold;"><a href="/wiki/Special:RecentChanges">' + rcText + '</a></div>');
@@ -92,9 +120,12 @@ $(function () {
 		$.get('/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2', function (data) {
 			var special = $(data).find(".special");
 			rcText = $(data).find("#firstHeading").text();
+			if ( !/\S/.test(rcText) ) {
+				rcText = $(data).find("#section_0").text();
+			}
 			localStorage['mw-recentchanges-sidebar-tab1'] = rcText;
 			addRcText();
-			$(".rcSidebarTab").css(rcSidebarTabStyle);
+			$(".rcSidebarTab").css( isMobile ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
 			localStorage['mw-recentchanges-sidebar'] = "";
 			special.children().each(function() {
 				var elem = $(this);
@@ -111,14 +142,14 @@ $(function () {
 			});
 			setTimeout(function() {
 				refresh();
-			}, 10000);
+			}, refreshRate * 1000);
 		});
 	}
 	refresh();
-	if (mw.config.get("wgVectorDisableSidebarPersistence") !== null && mw.config.get("wgNamespaceNumber") !== -1 &&
-	mw.config.get("wgAction") !== "history") {
+	if ( !isMobile && !isLegacyVector && mw.config.get("wgNamespaceNumber") !== -1 && mw.config.get("wgAction") !== "history" ) {
 		$(window).resize(function() {
 			repos();
 		});
 	}
+
 }());
