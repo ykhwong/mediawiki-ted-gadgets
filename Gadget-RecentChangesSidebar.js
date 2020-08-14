@@ -54,10 +54,16 @@ $(function () {
 			$("#rcSidebar").css("margin-right", "0px");
 			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
 			$("#mw-content-text").css("minHeight", minHeight + "px");
+			if (mw.config.get("wgCoordinates") !== null) {
+				$("#rcSidebar").css("top", "43px");
+			}
 		} else {
 			$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 90) + "px");
 			$("#mw-content-text").css("margin-right", "0px");
 			$("#mw-content-text").css("minHeight", "0px");
+			if (mw.config.get("wgCoordinates") !== null) {
+				$("#rcSidebar").css("top", "0px");
+			}
 		}
 	}
 
