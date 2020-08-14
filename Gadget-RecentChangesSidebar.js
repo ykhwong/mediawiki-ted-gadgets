@@ -6,7 +6,7 @@ $(function () {
 	const sidebarWidth = 200;
 	const minHeight = 400;
 	const refreshRate = 10;
-	const isMobile = ( typeof(mw.mobileFrontend) !== "undefined" );
+	const isVector = ( mw.config.get("skin") === "vector" );
 	const isLegacyVector = ( mw.config.get("wgVectorDisableSidebarPersistence") === null );
 	var rcText = "";
 	var rcSidebarStyle = {
@@ -44,7 +44,7 @@ $(function () {
 		"overflow-x": "hidden !important"
 	};
 
-	if ( isMobile ) {
+	if ( ! isVector ) {
 		$(".footer-content").append('<div id="rcSidebar"></div>');
 		$("#rcSidebar").css(rcSidebarMobileStyle);
 	} else {
@@ -76,7 +76,7 @@ $(function () {
 			$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
 		}
 	}
-	$(".rcSidebarTab").css( isMobile ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
+	$(".rcSidebarTab").css( ! isVector ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
 
 	function addRcText() {
 		$("#rcSidebar").html('<div class="rcSidebarTab" style="font-weight: bold;"><a href="/wiki/Special:RecentChanges">' + rcText + '</a></div>');
@@ -125,7 +125,7 @@ $(function () {
 			}
 			localStorage['mw-recentchanges-sidebar-tab1'] = rcText;
 			addRcText();
-			$(".rcSidebarTab").css( isMobile ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
+			$(".rcSidebarTab").css( ! isVector ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
 			localStorage['mw-recentchanges-sidebar'] = "";
 			special.children().each(function() {
 				var elem = $(this);
@@ -146,7 +146,7 @@ $(function () {
 		});
 	}
 	refresh();
-	if ( !isMobile && !isLegacyVector && mw.config.get("wgNamespaceNumber") !== -1 && mw.config.get("wgAction") !== "history" ) {
+	if ( isVector && !isLegacyVector && mw.config.get("wgNamespaceNumber") !== -1 && mw.config.get("wgAction") !== "history" ) {
 		$(window).resize(function() {
 			repos();
 		});
