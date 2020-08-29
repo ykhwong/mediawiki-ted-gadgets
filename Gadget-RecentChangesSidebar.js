@@ -7,7 +7,7 @@ $(function () {
 	const minHeight = 400;
 	const refreshRate = 10;
 	const isVector = ( mw.config.get("skin") === "vector" );
-	const isLegacyVector = ( mw.config.get("wgVectorDisableSidebarPersistence") === null );
+	const isLegacyVector = ( $(".skin-vector-legacy").length > 0 );
 	var preMarginRight = $("#mw-content-text").css("margin-right");
 	var preMinHeight = $("#mw-content-text").css("minHeight");
 	var options = {
