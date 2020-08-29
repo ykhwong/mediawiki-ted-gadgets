@@ -219,7 +219,7 @@ function sidebarHiddenInit() {
 	// Exception handling: Blankpage and RTRC
 	if (
 		mw.config.get( 'skin' ) !== 'vector' ||
-		$(".vector-animations-ready").length > 0 || $(".mw-special-Blankpage").length !== 0
+		$(".skin-vector-legacy").length === 0 || $(".mw-special-Blankpage").length !== 0
 	) {
 		return;
 	}
