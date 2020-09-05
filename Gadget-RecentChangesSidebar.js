@@ -83,6 +83,7 @@ $(function () {
 		}
 	}
 	$(".rcSidebarTab").css( ! isVector ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
+	$(".mw-parser-output").css("word-wrap", "break-word");
 
 	function addRcText() {
 		$("#rcSidebar").html('<div class="rcSidebarTab" style="font-weight: bold;"><a href="/wiki/Special:RecentChanges">' + rcText + '</a></div>');
