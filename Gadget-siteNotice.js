@@ -35,16 +35,14 @@ function getDivText(html, target) {
 
 function procDismiss() {
 	$("#siteNoticeLocal").prepend('<div class="mw-dismissable-notice-close2">' +
-		'<a tabindex="0" role="button"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/X-schliessen.svg/16px-X-schliessen.svg.png" title="' + dismissStr + '">' +
+		'<a tabindex="0" role="button"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/X-schliessen.svg/12px-X-schliessen.svg.png" title="' + dismissStr + '">' +
 		'</a></div>');
 	if (/^ko\.m\.wikipedia\.org/.test(window.location.host)) {
 		$("#siteNoticeLocal").css(
 			{ 'position': 'relative',
 			  'padding': '12px',
 			  'padding-right': '12px',
-			  'padding-bottom': '15px',
-			  'background-color': '#e8eeff',
-			  'border': '1px solid #ccd9ff'
+			  'padding-bottom': '15px'
 			}
 		);
 		$(".mw-dismissable-notice-close2").css(
@@ -58,10 +56,9 @@ function procDismiss() {
 		);
 	} else {
 		$("#siteNoticeLocal").css(
-			{ 'padding-top': '5px',
+			{
+			  'padding-top': '5px',
 			  'padding-bottom': '5px',
-			  'background-color': '#e8eeff',
-			  'border': '1px solid #ccd9ff',
 			  'margin-bottom': '5px'
 			}
 		);
