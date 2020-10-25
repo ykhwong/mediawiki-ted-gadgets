@@ -7,8 +7,7 @@ const sidebarCookieName = 'sidebarHidden';
 const commonImgUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb";
 const img = {
 	next: commonImgUrl + "/9/95/Icons8_flat_next.svg/15px-Icons8_flat_next.svg.png",
-	prev: commonImgUrl + "/b/bd/Icons8_flat_previous.svg/15px-Icons8_flat_previous.svg.png",
-	logo: commonImgUrl + "/3/3e/WP_mobile_launch_icon.svg/30px-WP_mobile_launch_icon.svg.png"
+	prev: commonImgUrl + "/b/bd/Icons8_flat_previous.svg/15px-Icons8_flat_previous.svg.png"
 };
 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 const cookieExpires = 30;
@@ -74,7 +73,6 @@ function hideSidebar() {
 		"margin-left": "20px"
 	});
 	$("#mw-panel").hide();
-	$("#sliderCollapseLogo, #sliderCollapseText").show();
 	$.cookie( sidebarCookieName, "true", {
 		expires: cookieExpires, path: '/'
 	});
@@ -101,33 +99,20 @@ function showSidebar() {
 		"margin-left": "167px"
 	});
 	$("#mw-panel").show();
-	$("#sliderCollapseLogo, #sliderCollapseText").hide();
 	$.cookie( sidebarCookieName, "false", {
 		expires: cookieExpires, path: '/'
 	});
 }
 
-function updatePosHelper(arr) {
-	const divList = [ "#sidebarCollapse", "#sliderCollapseLogo", "#sliderCollapseText" ];
-	for (var i=0; i < arr.length; i++) {
-		if (arr[i] === null) {
-			continue;
-		}
-		const bDiv = divList[i];
-		const bLeft = $(bDiv).css("left");
-		const bSize = arr[i];
-		if (bLeft !== bSize) {
-			$(bDiv).css("left", bSize);
-		}
-	}
-}
-
 function updatePos() {
 	if ($("#mw-panel").outerWidth() > 160) {
-		updatePosHelper(sidebarHidden ? ["20px", "30px", "70px"] : ["165px", null, null]);
+		$("#sidebarCollapse").css("left", sidebarHidden ? "20px" : "165px");
+		$("#left-navigation").css("margin-left", sidebarHidden ? "31px" : "176px");
 	} else {
-		updatePosHelper(sidebarHidden ? ["4px", "15px", "55px"] : ["149px", null, null]);
+		$("#sidebarCollapse").css("left", sidebarHidden ? "4px" : "149px");
+		$("#left-navigation").css("margin-left", sidebarHidden ? "15px" : "160px");
 	}
+
 	if (mw.user.options.get("visualeditor-newwikitext") === "1") {
 		var menuloc = $(".oo-ui-toolbar").offset().top + $(".oo-ui-toolbar-bar").outerHeight(true);	
 		$("#sidebarCollapse").css("top", ( menuloc + 15 ) + "px");
@@ -135,13 +120,9 @@ function updatePos() {
 }
 
 function sidebarHiddenProc() {
-	var myLang = "";
 	var sidebarCollapse = "";
-	var newLink = "";
-	var sidebarTitle = mw.config.get("wgSiteName");
 
 	sidebarGadgetLoaded = true;
-	myLang = window.location.host.split('.')[0];
 
 	sidebarCollapse = $('<img />').attr({
 		'id': 'sidebarCollapse',
@@ -159,41 +140,11 @@ function sidebarHiddenProc() {
 		'border-radius': '50px',
 		'text-align': 'center',
 		'border': '1px solid rgb(199, 238, 255)',
-		'background': 'white',
+		'background-color': 'white',
 		'z-index': '2'
 	});
 
-	newLink = $('<a />').attr({
-		'id': 'newLink',
-		'href': '/',
-		'title': $(".mw-wiki-logo").attr("title")
-	});
-
-	$('<img />').attr({
-		'id': 'sliderCollapseLogo',
-		'src': img.logo
-	}).css({
-		'display': 'none',
-		'position': 'absolute',
-		'top': '47px',
-		'cursor': 'pointer',
-		'float': 'none'
-	}).appendTo(newLink);
-
-	$('<div />').attr({
-		'id': 'sliderCollapseText'
-	}).css({
-		'display': 'none',
-		'position': 'absolute',
-		'top': '50px',
-		'color': 'black',
-		'text-decoration': 'none'
-	}).html(
-		sidebarTitle
-	).appendTo(newLink);
-
 	sidebarCollapse.appendTo('#mw-navigation');
-	newLink.appendTo('#mw-navigation');
 
 	if ( $.cookie( sidebarCookieName ) === "true" ) {
 		hideSidebar();
@@ -206,9 +157,9 @@ function sidebarHiddenProc() {
 	});
 
 	$("#sidebarCollapse").mouseover(function() {
-		$(this).css("background", "rgb(223, 245, 255)");
+		$(this).css("background-color", "rgb(242, 251, 255)");
 	}).mouseout(function() {
-		$(this).css("background", "white");
+		$(this).css("background-color", "white");
 	}).click(function() {
 		sidebarHidden ? showSidebar() : hideSidebar();
 	});
