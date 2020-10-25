@@ -210,6 +210,14 @@ $(function () {
 		}
 	}
 
+	if (isVector) {
+		if (localStorage['mw-recentchanges-sidebar-state'] == 'hidden') {
+			hideSidebar();
+		} else {
+			showSidebar();
+		}
+	}
+
 	if (isVector && mw.config.get('wgAction') == 'view') {
 		$toggle = $( '<li><span><a></a></span></li>' )
 			.attr( 'id', 'ca-recentchanges' )
@@ -219,12 +227,5 @@ $(function () {
 			.text( '최근 바뀜 사이드바' ) // Recent changes sidebar
 			.click( toggleState );
 		$( '#p-views ul' ).append( $toggle );
-
-		if (localStorage['mw-recentchanges-sidebar-state'] == 'hidden') {
-			hideSidebar();
-		} else {
-			showSidebar();
-		}
 	}
-
 }());
