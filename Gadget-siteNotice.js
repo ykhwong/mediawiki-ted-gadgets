@@ -6,8 +6,11 @@
 * Reference: https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/DismissableSiteNotice/+/master/modules/ext.dismissableSiteNotice.js
 */
 $(function () {
-
 var cookieName = 'dismissNewSiteNotice';
+var cookieData = {
+	noticeData: 'newSiteNoticeData',
+	dismissClicked: 'dismissClicked'
+};
 var sitenoticeId = '';
 var dismissStr = "";
 var noticeGrpPage = '위키백과:소도구/noticeGrp';
@@ -39,7 +42,8 @@ function procDismiss() {
 		'</a></div>');
 	if (/^ko\.m\.wikipedia\.org/.test(window.location.host)) {
 		$("#siteNoticeLocal").css(
-			{ 'position': 'relative',
+			{
+			  'position': 'relative',
 			  'padding': '12px',
 			  'padding-right': '12px',
 			  'padding-bottom': '15px'
@@ -50,6 +54,7 @@ function procDismiss() {
 				'position': 'relative',
 				'top': '0px',
 				'right': '0px',
+				'margin-left': '5px',
 				'text-align': 'right',
 				'float': 'right'
 			}
@@ -67,6 +72,7 @@ function procDismiss() {
 				'position': 'relative',
 				'top': '0px',
 				'right': '7px',
+				'margin-left': '5px',
 				'text-align': 'right',
 				'float': 'right'
 			}
@@ -86,8 +92,11 @@ function procDismiss() {
 					expires: 30,
 					path: '/'
 				} );
+				localStorage[cookieData.dismissClicked] = true;
 			}
 		});
+
+	localStorage[cookieData.noticeData] = $("#siteNotice").html();
 }
 
 if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
@@ -96,6 +105,15 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 	$(".mw-jump-link").html("");
 } else {
 	var api = new mw.Api();
+	var tmpSiteNotice = $("#siteNotice").html();
+
+	if ((localStorage[cookieData.dismissClicked] === undefined ||
+		localStorage[cookieData.dismissClicked] === false) &&
+		localStorage[cookieData.noticeData] !== undefined)
+	{
+		$("#siteNotice").html(localStorage[cookieData.noticeData]);
+	}
+
 	api.parse(
 	    new mw.Title( noticeGrpPage )
 	).then( function( html ) {
@@ -111,6 +129,8 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
 				// If the user has the notice dismissal cookie set, exit.
 				if ( $.cookie( cookieName ) !== sitenoticeId ) {
+					localStorage[cookieData.dismissClicked] = false;
+					$("#siteNotice").html(tmpSiteNotice);
 					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
 					procDismiss();
 				}
@@ -118,18 +138,25 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 			return;
 		}
 		if (html2text(gadgetAnonnotice).trim().length === 0) {
+			$("#siteNotice").html(tmpSiteNotice);
 			return;
 		} else if (/^\s*-\s*$/.test(html2text(gadgetAnonnotice).trim())) {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
 				// If the user has the notice dismissal cookie set, exit.
 				if ( $.cookie( cookieName ) !== sitenoticeId ) {
+					localStorage[cookieData.dismissClicked] = false;
+					$("#siteNotice").html(tmpSiteNotice);
 					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
 					procDismiss();
+					return;
 				}
 			}
 		} else {
+			localStorage[cookieData.dismissClicked] = false;
+			$("#siteNotice").html(tmpSiteNotice);
 			$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetAnonnotice + '</div>');
 			procDismiss();
+			return;
 		}
 	});
 }
