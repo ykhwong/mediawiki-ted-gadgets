@@ -5,12 +5,30 @@
 * @author ykhwong
 * Reference: https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/DismissableSiteNotice/+/master/modules/ext.dismissableSiteNotice.js
 */
-$(function () {
+var isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
+var tmpSiteNotice = $("#siteNotice").html();
 var cookieName = 'dismissNewSiteNotice';
 var cookieData = {
 	noticeData: 'newSiteNoticeData',
 	dismissClicked: 'dismissClicked'
 };
+
+if (isBot) {
+	$("#siteNotice").html("");
+	$(".noprint").html("");
+	$(".mw-jump-link").html("");
+} else {
+	if ((localStorage[cookieData.dismissClicked] === undefined ||
+		localStorage[cookieData.dismissClicked] === "false") &&
+		localStorage[cookieData.noticeData] !== undefined)
+	{
+		if ( $("#siteNotice").length > 0 ) {
+			$("#siteNotice").html(localStorage[cookieData.noticeData]);
+		}
+	}
+}
+
+$(function () {
 var sitenoticeId = '';
 var dismissStr = "";
 var noticeGrpPage = '위키백과:소도구/noticeGrp';
@@ -99,66 +117,55 @@ function procDismiss() {
 	localStorage[cookieData.noticeData] = $("#siteNotice").html();
 }
 
-if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
-	$("#siteNotice").html("");
-	$(".noprint").html("");
-	$(".mw-jump-link").html("");
-} else {
-	var api = new mw.Api();
-	var tmpSiteNotice = $("#siteNotice").html();
-
-	if ((localStorage[cookieData.dismissClicked] === undefined ||
-		localStorage[cookieData.dismissClicked] === "false") &&
-		localStorage[cookieData.noticeData] !== undefined)
-	{
-		$("#siteNotice").html(localStorage[cookieData.noticeData]);
-	}
-
-	api.parse(
-	    new mw.Title( noticeGrpPage )
-	).then( function( html ) {
-		var gadgetSiteNotice = "";
-		var gadgetAnonnotice = "";
-		html = html.replace("mw-parser-output", "mw-dismissable-notice");
-		gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
-		gadgetAnonnotice = getDivHtml(html, "#gadgetAnonnotice");
-		sitenoticeId = getDivText(html, "#sitenoticeId");
-		dismissStr = getDivText(html, "#dismissLabel"); 
-	
-		if (mw.config.get('wgUserName') !== null) {
-			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
-				// If the user has the notice dismissal cookie set, exit.
-				if ( $.cookie( cookieName ) !== sitenoticeId ) {
-					localStorage[cookieData.dismissClicked] = false;
-					$("#siteNotice").html(tmpSiteNotice);
-					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
-					procDismiss();
-				}
-			}
-			return;
-		}
-		if (html2text(gadgetAnonnotice).trim().length === 0) {
-			$("#siteNotice").html(tmpSiteNotice);
-			return;
-		} else if (/^\s*-\s*$/.test(html2text(gadgetAnonnotice).trim())) {
-			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
-				// If the user has the notice dismissal cookie set, exit.
-				if ( $.cookie( cookieName ) !== sitenoticeId ) {
-					localStorage[cookieData.dismissClicked] = false;
-					$("#siteNotice").html(tmpSiteNotice);
-					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
-					procDismiss();
-					return;
-				}
-			}
-		} else {
-			localStorage[cookieData.dismissClicked] = false;
-			$("#siteNotice").html(tmpSiteNotice);
-			$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetAnonnotice + '</div>');
-			procDismiss();
-			return;
-		}
-	});
+if (isBot) {
+	return;
 }
+
+var api = new mw.Api();
+api.parse(
+    new mw.Title( noticeGrpPage )
+).then( function( html ) {
+	var gadgetSiteNotice = "";
+	var gadgetAnonnotice = "";
+	html = html.replace("mw-parser-output", "mw-dismissable-notice");
+	gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
+	gadgetAnonnotice = getDivHtml(html, "#gadgetAnonnotice");
+	sitenoticeId = getDivText(html, "#sitenoticeId");
+	dismissStr = getDivText(html, "#dismissLabel"); 
+
+	if (mw.config.get('wgUserName') !== null) {
+		if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
+			// If the user has the notice dismissal cookie set, exit.
+			if ( $.cookie( cookieName ) !== sitenoticeId ) {
+				localStorage[cookieData.dismissClicked] = false;
+				$("#siteNotice").html(tmpSiteNotice);
+				$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
+				procDismiss();
+			}
+		}
+		return;
+	}
+	if (html2text(gadgetAnonnotice).trim().length === 0) {
+		$("#siteNotice").html(tmpSiteNotice);
+		return;
+	} else if (/^\s*-\s*$/.test(html2text(gadgetAnonnotice).trim())) {
+		if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
+			// If the user has the notice dismissal cookie set, exit.
+			if ( $.cookie( cookieName ) !== sitenoticeId ) {
+				localStorage[cookieData.dismissClicked] = false;
+				$("#siteNotice").html(tmpSiteNotice);
+				$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
+				procDismiss();
+				return;
+			}
+		}
+	} else {
+		localStorage[cookieData.dismissClicked] = false;
+		$("#siteNotice").html(tmpSiteNotice);
+		$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetAnonnotice + '</div>');
+		procDismiss();
+		return;
+	}
+});
 
 }());
