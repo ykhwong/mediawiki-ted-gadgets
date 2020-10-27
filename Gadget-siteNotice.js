@@ -108,7 +108,7 @@ if (/bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent)) {
 	var tmpSiteNotice = $("#siteNotice").html();
 
 	if ((localStorage[cookieData.dismissClicked] === undefined ||
-		localStorage[cookieData.dismissClicked] === false) &&
+		localStorage[cookieData.dismissClicked] === "false") &&
 		localStorage[cookieData.noticeData] !== undefined)
 	{
 		$("#siteNotice").html(localStorage[cookieData.noticeData]);
