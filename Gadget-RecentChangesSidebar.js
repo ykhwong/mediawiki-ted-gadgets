@@ -216,9 +216,7 @@ $(function () {
 		} else {
 			showSidebar();
 		}
-	}
 
-	if (isVector && mw.config.get('wgAction') == 'view') {
 		$toggle = $( '<li><span><a></a></span></li>' )
 			.attr( 'id', 'ca-recentchanges' )
 			.attr( 'class', 'icon' );
@@ -226,6 +224,10 @@ $(function () {
 			.attr( 'title', '최근 바뀜 사이드바를 토글합니다' ) // Toggle recent changes sidebar
 			.text( '최근 바뀜 사이드바' ) // Recent changes sidebar
 			.click( toggleState );
-		$( '#p-views ul' ).append( $toggle );
+		if ( $( '#ca-nstab-special' ).length > 0 ) {
+			$( '#ca-nstab-special' ).append( $toggle );
+		} else {
+			$( '#p-views ul' ).append( $toggle );
+		}
 	}
 }());
