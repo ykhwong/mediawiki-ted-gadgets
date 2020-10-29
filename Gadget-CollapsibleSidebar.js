@@ -196,5 +196,7 @@ function sidebarHiddenInit() {
 	sidebarHiddenProc();
 }
 
-sidebarHiddenInit();
+mw.loader.using('jquery.cookie').then(function () {
+	sidebarHiddenInit();
+});
 }());
