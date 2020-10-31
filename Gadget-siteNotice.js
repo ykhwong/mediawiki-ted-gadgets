@@ -137,6 +137,7 @@ function procApi() {
 		if (/\S/.test(tmpSiteNotice)) {
 			$("#siteNotice").html(tmpSiteNotice);
 		}
+
 		if (mw.config.get('wgUserName') !== null) {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
 				// If the user has the notice dismissal cookie set, exit.
@@ -150,8 +151,9 @@ function procApi() {
 			}
 			return;
 		}
+
+		localStorage[cookieData.noticeData] = tmpSiteNotice;
 		if (html2text(gadgetAnonnotice).trim().length === 0) {
-			localStorage[cookieData.noticeData] = tmpSiteNotice;
 			return;
 		} else if (/^\s*-\s*$/.test(html2text(gadgetAnonnotice).trim())) {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
@@ -162,7 +164,6 @@ function procApi() {
 					procDismiss();
 					return;
 				} else {
-					localStorage[cookieData.noticeData] = tmpSiteNotice;
 					return;
 				}
 			}
