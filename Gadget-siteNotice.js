@@ -5,8 +5,9 @@
 * @author ykhwong
 * Reference: https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/DismissableSiteNotice/+/master/modules/ext.dismissableSiteNotice.js
 */
+const noticeGrpPage = '위키백과:소도구/noticeGrp';
 var isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
-var tmpSiteNotice = $("#siteNotice").html();
+var tmpSiteNotice = "";
 var cookieName = 'dismissNewSiteNotice';
 var cookieData = {
 	noticeData: 'newSiteNoticeData',
@@ -23,6 +24,7 @@ if (isBot) {
 		localStorage[cookieData.noticeData] !== undefined)
 	{
 		if ( $("#siteNotice").length > 0 ) {
+			tmpSiteNotice = $("#siteNotice").html();
 			$("#siteNotice").html(localStorage[cookieData.noticeData]);
 		}
 	}
@@ -30,8 +32,7 @@ if (isBot) {
 
 $(function () {
 var sitenoticeId = '';
-var dismissStr = "";
-var noticeGrpPage = '위키백과:소도구/noticeGrp';
+var dismissStr = '';
 
 function html2text(html) {
 	var tag = document.createElement('div');
@@ -117,63 +118,63 @@ function procDismiss() {
 	localStorage[cookieData.noticeData] = $("#siteNotice").html();
 }
 
-if (isBot) {
-	return;
-}
-
-var api = new mw.Api();
-api.parse(
-    new mw.Title( noticeGrpPage )
-).then( function( html ) {
-	var gadgetSiteNotice = "";
-	var gadgetAnonnotice = "";
-	html = html.replace("mw-parser-output", "mw-dismissable-notice");
-	gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
-	gadgetAnonnotice = getDivHtml(html, "#gadgetAnonnotice");
-	sitenoticeId = getDivText(html, "#sitenoticeId");
-	dismissStr = getDivText(html, "#dismissLabel"); 
-
-	if (mw.config.get('wgUserName') !== null) {
-		if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
-			// If the user has the notice dismissal cookie set, exit.
-			if ( $.cookie( cookieName ) !== sitenoticeId ) {
-				localStorage[cookieData.dismissClicked] = false;
-				$("#siteNotice").html(tmpSiteNotice);
-				$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
-				procDismiss();
+function procApi() {
+	if (isBot) {
+		return;
+	}
+	var api = new mw.Api();
+	api.parse(
+	    new mw.Title( noticeGrpPage )
+	).then( function( html ) {
+		var gadgetSiteNotice = "";
+		var gadgetAnonnotice = "";
+		html = html.replace("mw-parser-output", "mw-dismissable-notice");
+		gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
+		gadgetAnonnotice = getDivHtml(html, "#gadgetAnonnotice");
+		sitenoticeId = getDivText(html, "#sitenoticeId");
+		dismissStr = getDivText(html, "#dismissLabel"); 
+	
+		if (/\S/.test(tmpSiteNotice)) {
+			$("#siteNotice").html(tmpSiteNotice);
+		}
+		if (mw.config.get('wgUserName') !== null) {
+			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
+				// If the user has the notice dismissal cookie set, exit.
+				if ( $.cookie( cookieName ) !== sitenoticeId ) {
+					localStorage[cookieData.dismissClicked] = false;
+					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
+					procDismiss();
+				}
+			} else {
+				localStorage[cookieData.noticeData] = tmpSiteNotice;
+			}
+			return;
+		}
+		if (html2text(gadgetAnonnotice).trim().length === 0) {
+			localStorage[cookieData.noticeData] = tmpSiteNotice;
+			return;
+		} else if (/^\s*-\s*$/.test(html2text(gadgetAnonnotice).trim())) {
+			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
+				// If the user has the notice dismissal cookie set, exit.
+				if ( $.cookie( cookieName ) !== sitenoticeId ) {
+					localStorage[cookieData.dismissClicked] = false;
+					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
+					procDismiss();
+					return;
+				} else {
+					localStorage[cookieData.noticeData] = tmpSiteNotice;
+					return;
+				}
 			}
 		} else {
-			$("#siteNotice").html(tmpSiteNotice);
-			localStorage[cookieData.noticeData] = $("#siteNotice").html();
+			localStorage[cookieData.dismissClicked] = false;
+			$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetAnonnotice + '</div>');
+			procDismiss();
+			return;
 		}
-		return;
-	}
-	if (html2text(gadgetAnonnotice).trim().length === 0) {
-		$("#siteNotice").html(tmpSiteNotice);
-		localStorage[cookieData.noticeData] = $("#siteNotice").html();
-		return;
-	} else if (/^\s*-\s*$/.test(html2text(gadgetAnonnotice).trim())) {
-		if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
-			// If the user has the notice dismissal cookie set, exit.
-			if ( $.cookie( cookieName ) !== sitenoticeId ) {
-				localStorage[cookieData.dismissClicked] = false;
-				$("#siteNotice").html(tmpSiteNotice);
-				$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
-				procDismiss();
-				return;
-			} else {
-				$("#siteNotice").html(tmpSiteNotice);
-				localStorage[cookieData.noticeData] = $("#siteNotice").html();
-				return;
-			}
-		}
-	} else {
-		localStorage[cookieData.dismissClicked] = false;
-		$("#siteNotice").html(tmpSiteNotice);
-		$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetAnonnotice + '</div>');
-		procDismiss();
-		return;
-	}
-});
+	});
+}
+
+procApi();
 
 }());
