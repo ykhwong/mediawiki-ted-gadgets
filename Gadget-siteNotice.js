@@ -161,6 +161,10 @@ api.parse(
 				$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
 				procDismiss();
 				return;
+			} else {
+				$("#siteNotice").html(tmpSiteNotice);
+				localStorage[cookieData.noticeData] = $("#siteNotice").html();
+				return;
 			}
 		}
 	} else {
