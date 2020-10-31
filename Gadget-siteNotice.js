@@ -58,7 +58,7 @@ function procDismiss() {
 	$("#siteNoticeLocal").prepend('<div class="mw-dismissable-notice-close2">' +
 		'<a tabindex="0" role="button"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/X-schliessen.svg/12px-X-schliessen.svg.png" title="' + dismissStr + '">' +
 		'</a></div>');
-	if (/^ko\.m\.wikipedia\.org/.test(window.location.host)) {
+	if (/\.m\.wikipedia\.org/.test(window.location.host)) {
 		$("#siteNoticeLocal").css(
 			{
 			  'position': 'relative',
@@ -142,11 +142,15 @@ api.parse(
 				$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
 				procDismiss();
 			}
+		} else {
+			$("#siteNotice").html(tmpSiteNotice);
+			localStorage[cookieData.noticeData] = $("#siteNotice").html();
 		}
 		return;
 	}
 	if (html2text(gadgetAnonnotice).trim().length === 0) {
 		$("#siteNotice").html(tmpSiteNotice);
+		localStorage[cookieData.noticeData] = $("#siteNotice").html();
 		return;
 	} else if (/^\s*-\s*$/.test(html2text(gadgetAnonnotice).trim())) {
 		if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
