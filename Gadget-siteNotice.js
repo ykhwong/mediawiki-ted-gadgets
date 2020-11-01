@@ -6,7 +6,8 @@
 * Reference: https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/DismissableSiteNotice/+/master/modules/ext.dismissableSiteNotice.js
 */
 const noticeGrpPage = '위키백과:소도구/noticeGrp';
-var isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
+const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
+const isMobile = /\.m\.wikipedia\.org/.test(window.location.host);
 var tmpSiteNotice = "";
 var cookieName = 'dismissNewSiteNotice';
 var cookieData = {
@@ -14,11 +15,7 @@ var cookieData = {
 	dismissClicked: 'dismissClicked'
 };
 
-if (isBot) {
-	$("#siteNotice").html("");
-	$(".noprint").html("");
-	$(".mw-jump-link").html("");
-} else {
+function procCache() {
 	if ((localStorage[cookieData.dismissClicked] === undefined ||
 		localStorage[cookieData.dismissClicked] === "false") &&
 		localStorage[cookieData.noticeData] !== undefined)
@@ -27,6 +24,16 @@ if (isBot) {
 			tmpSiteNotice = $("#siteNotice").html();
 			$("#siteNotice").html(localStorage[cookieData.noticeData]);
 		}
+	}
+}
+
+if (isBot) {
+	$("#siteNotice").html("");
+	$(".noprint").html("");
+	$(".mw-jump-link").html("");
+} else {
+	if (!isMobile) {
+		procCache();
 	}
 }
 
@@ -59,7 +66,7 @@ function procDismiss() {
 	$("#siteNoticeLocal").prepend('<div class="mw-dismissable-notice-close2">' +
 		'<a tabindex="0" role="button"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/X-schliessen.svg/12px-X-schliessen.svg.png" title="' + dismissStr + '">' +
 		'</a></div>');
-	if (/\.m\.wikipedia\.org/.test(window.location.host)) {
+	if (isMobile) {
 		$("#siteNoticeLocal").css(
 			{
 			  'position': 'relative',
