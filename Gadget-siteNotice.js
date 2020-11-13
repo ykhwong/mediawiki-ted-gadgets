@@ -32,9 +32,11 @@ if (isBot) {
 	$(".noprint").html("");
 	$(".mw-jump-link").html("");
 } else {
+	/*
 	if (!isMobile) {
 		procCache();
 	}
+	*/
 }
 
 $(function () {
