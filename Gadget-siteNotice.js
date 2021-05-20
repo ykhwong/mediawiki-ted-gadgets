@@ -106,6 +106,9 @@ function procDismiss() {
 			}
 		);
 	}
+	$("#siteNoticeLocal ul").css({
+		"list-style": "none"
+	});
 
 	$( '.mw-dismissable-notice-close2' )
 		.css( 'visibility', 'visible' )
