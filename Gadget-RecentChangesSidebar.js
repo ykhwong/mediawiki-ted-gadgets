@@ -13,6 +13,16 @@ $(function () {
 	var options = {
 		autoresize : false
 	};
+	var msgGrp = {
+		"sidebar_title" : {
+			"en" : "Recent changes sidebar",
+			"ko" : "최근 바뀜 사이드바"
+		},
+		"sidebar_desc" : {
+			"en" : "Toggle recent changes sidebar",
+			"ko" : "최근 바뀜 사이드바를 토글합니다"
+		}
+	};
 
 	var rcText = "";
 	var rcSidebarStyle = {
@@ -87,6 +97,24 @@ $(function () {
 	$(".rcSidebarTab").css( ! isVector ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
 	$(".mw-parser-output").css("word-wrap", "break-word");
 
+	function getMsg(msgCode) {
+		var langCode = mw.config.get( 'wgContentLanguage' );
+		var result = "";
+		if (!/\S/.test(langCode)) {
+			langCode = "en";
+		}
+
+		if (msgGrp[msgCode]) {
+			if (msgGrp[msgCode][langCode]) {
+				result = msgGrp[msgCode][langCode];
+			} else {
+				result = msgGrp[msgCode].en;
+			}
+		}
+
+		return result;
+	}
+
 	function addRcText() {
 		$("#rcSidebar").html('<div class="rcSidebarTab" style="font-weight: bold;"><a href="/wiki/Special:RecentChanges">' + rcText + '</a></div>');
 	}
@@ -118,6 +146,11 @@ $(function () {
 
 		return elementBottom > viewportTop && elementTop < viewportBottom;
 	};
+
+	$.fn.isOverflown = function(){
+		var e=this[0];
+		return e.scrollHeight>e.clientHeight||e.scrollWidth>e.clientWidth;
+	}
 
 	function refresh() {
 		if (!$("#rcSidebar").isInViewport() || document.hidden || document.msHidden || document.webkitHidden || document.mozHidden ||
@@ -223,8 +256,8 @@ $(function () {
 			.attr( 'id', 'ca-recentchanges' )
 			.attr( 'class', 'icon' );
 		$toggle.find( 'a' )
-			.attr( 'title', '최근 바뀜 사이드바를 토글합니다' ) // Toggle recent changes sidebar
-			.text( '최근 바뀜 사이드바' ) // Recent changes sidebar
+			.attr( 'title', getMsg('sidebar_desc') ) // Toggle recent changes sidebar
+			.text( getMsg('sidebar_title') ) // Recent changes sidebar
 			.click( toggleState );
 		if ( $( '#ca-nstab-special' ).length > 0 ) {
 			$( '#ca-nstab-special' ).append( $toggle );
