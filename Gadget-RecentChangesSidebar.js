@@ -50,6 +50,8 @@ $(function () {
 		"overflow-x": "hidden !important"
 	};
 
+	if ($(".diff").length > 0) return;
+
 	if ( ! isVector ) {
 		$(".footer-content").append('<div id="rcSidebar"></div>');
 		$("#rcSidebar").css(rcSidebarMobileStyle);
