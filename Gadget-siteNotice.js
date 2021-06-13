@@ -83,7 +83,7 @@ function procDismiss() {
 				'position': 'relative',
 				'top': '0px',
 				'right': '0px',
-				'margin-left': '5px',
+				'margin-left': '-17px', /* dismiss image size */
 				'text-align': 'right',
 				'float': 'right'
 			}
@@ -101,7 +101,7 @@ function procDismiss() {
 				'position': 'relative',
 				'top': '0px',
 				'right': '7px',
-				'margin-left': '5px',
+				'margin-left': '-17px', /* dismiss image size */
 				'text-align': 'right',
 				'float': 'right'
 			}
