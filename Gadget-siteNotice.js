@@ -42,6 +42,7 @@ if (isBot) {
 $(function () {
 var sitenoticeId = '';
 var dismissStr = '';
+var sitenoticeStyle = '';
 
 function html2text(html) {
 	var tag = document.createElement('div');
@@ -66,7 +67,7 @@ function getDivText(html, target) {
 
 function procDismiss() {
 	$("#siteNoticeLocal").prepend('<div class="mw-dismissable-notice-close2">' +
-		'<a tabindex="0" role="button"><img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Ctitle%3Eclose%3C/title%3E%3Cpath d=%22M4.34 2.93l12.73 12.73-1.41 1.41L2.93 4.35z%22/%3E%3Cpath d=%22M17.07 4.34L4.34 17.07l-1.41-1.41L15.66 1.93z%22/%3E%3C/svg%3E" style="opacity: 0.8; width: 17px;" title="' + dismissStr + '">' +
+		'<a tabindex="0" role="button"><img style="display: block; opacity: 0.55; width: 17px;" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Ctitle%3Eclose%3C/title%3E%3Cpath d=%22M4.34 2.93l12.73 12.73-1.41 1.41L2.93 4.35z%22/%3E%3Cpath d=%22M17.07 4.34L4.34 17.07l-1.41-1.41L15.66 1.93z%22/%3E%3C/svg%3E" title="' + dismissStr + '">' +
 		'</a></div>');
 	if (isMobile) {
 		$("#siteNoticeLocal").css(
@@ -92,7 +93,7 @@ function procDismiss() {
 			{
 			  'padding-top': '5px',
 			  'padding-bottom': '5px',
-			  'margin-bottom': '5px'
+			  'margin-bottom': '15px'
 			}
 		);
 		$(".mw-dismissable-notice-close2").css(
@@ -144,7 +145,8 @@ function procApi() {
 		gadgetSiteNotice = getDivHtml(html, "#gadgetSiteNotice");
 		gadgetAnonnotice = getDivHtml(html, "#gadgetAnonnotice");
 		sitenoticeId = getDivText(html, "#sitenoticeId");
-		dismissStr = getDivText(html, "#dismissLabel"); 
+		dismissStr = getDivText(html, "#dismissLabel");
+		sitenoticeStyle = getDivText(html, "#sitenoticeStyle");
 	
 		if (/\S/.test(tmpSiteNotice)) {
 			$("#siteNotice").html(tmpSiteNotice);
@@ -155,7 +157,7 @@ function procApi() {
 				// If the user has the notice dismissal cookie set, exit.
 				if ( $.cookie( cookieName ) !== sitenoticeId ) {
 					localStorage[cookieData.dismissClicked] = false;
-					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
+					$("#siteNotice").append('<div id="siteNoticeLocal" style="' + sitenoticeStyle + '">' + gadgetSiteNotice + '</div>');
 					procDismiss();
 				}
 			} else {
@@ -172,7 +174,7 @@ function procApi() {
 				// If the user has the notice dismissal cookie set, exit.
 				if ( $.cookie( cookieName ) !== sitenoticeId ) {
 					localStorage[cookieData.dismissClicked] = false;
-					$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetSiteNotice + '</div>');
+					$("#siteNotice").append('<div id="siteNoticeLocal" style="' + sitenoticeStyle + '">' + gadgetSiteNotice + '</div>');
 					procDismiss();
 					return;
 				} else {
@@ -181,7 +183,7 @@ function procApi() {
 			}
 		} else {
 			localStorage[cookieData.dismissClicked] = false;
-			$("#siteNotice").append('<div id="siteNoticeLocal">' + gadgetAnonnotice + '</div>');
+			$("#siteNotice").append('<div id="siteNoticeLocal" style="' + sitenoticeStyle + '">' + gadgetAnonnotice + '</div>');
 			procDismiss();
 			return;
 		}
