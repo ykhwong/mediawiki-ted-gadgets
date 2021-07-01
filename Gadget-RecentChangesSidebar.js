@@ -120,7 +120,7 @@ $(function () {
 	}
 
 	function repos() {
-		if ($(".mw-workspace-container").outerWidth() < 1440) {
+		if ($(".mw-workspace-container").outerWidth() < 1440 || $("#ca-nstab-category").length > 0) {
 			$("#rcSidebar").css("margin-right", "0px");
 			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
 			$("#mw-content-text").css("minHeight", minHeight + "px");
