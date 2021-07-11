@@ -67,7 +67,7 @@ function getDivText(html, target) {
 
 function procDismiss() {
 	$("#siteNoticeLocal").prepend('<div class="mw-dismissable-notice-close2">' +
-		'<a tabindex="0" role="button"><img style="display: block; opacity: 0.55; width: 17px;" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Ctitle%3Eclose%3C/title%3E%3Cpath d=%22M4.34 2.93l12.73 12.73-1.41 1.41L2.93 4.35z%22/%3E%3Cpath d=%22M17.07 4.34L4.34 17.07l-1.41-1.41L15.66 1.93z%22/%3E%3C/svg%3E" title="' + dismissStr + '">' +
+		'<a tabindex="0" role="button"><img style="display: block; opacity: 0.55; width: 17px; margin-left: 2px; margin-bottom: 2px;" src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Ctitle%3Eclose%3C/title%3E%3Cpath d=%22M4.34 2.93l12.73 12.73-1.41 1.41L2.93 4.35z%22/%3E%3Cpath d=%22M17.07 4.34L4.34 17.07l-1.41-1.41L15.66 1.93z%22/%3E%3C/svg%3E" title="' + dismissStr + '">' +
 		'</a></div>');
 	if (isMobile) {
 		$("#siteNoticeLocal").css(
