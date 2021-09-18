@@ -10,9 +10,10 @@
 /* globals mw, OO, $ */
 
 const msg = {
-	previewWaiting: '미리 보기를 생성하는 중...', // Generating preview...
+	previewWaiting: '미리 보기를 생성하는 중...', // Generating a preview...
 	codeEditorTab: '코드 편집기', // Code editor
-	realtimePreviewTab: '실시간 미리 보기' // Real-time preview
+	realtimePreviewTab: '실시간 미리 보기', // Real-time preview
+	nothingToPreview: '변경 사항이 없어서 미리 보기를 생성할 수 없습니다.' // Could not generate a preview because no changes are found
 };
 
 var xhrArr = [];
@@ -101,8 +102,64 @@ function openPreviewTab() {
 
 function proc() {
 	if ( $("#wpSaveWidget").length === 0 ) {
+		function onElementInserted(containerSelector, elementSelector, callback) {
+			var onMutationsObserved = function(mutations) {
+				mutations.forEach(function(mutation) {
+					if (mutation.addedNodes.length) {
+						var elements = $(mutation.addedNodes).find(elementSelector);
+						for (var i = 0, len = elements.length; i < len; i++) {
+							callback(elements[i]);
+						}
+					}
+				});
+			};
+
+			var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+			var observer = new MutationObserver(onMutationsObserved);
+			observer.observe( $(containerSelector)[0], { childList: true, subtree: true } );
+		}
+
+		onElementInserted('body', '.oo-ui-toolbar-bar .ve-ui-toolbar-group-save .oo-ui-tool-title', function(element) {
+			const urlParams = new URLSearchParams(window.location.search);
+			const myParam = urlParams.get('veaction');
+			if (myParam === "editsource") {
+				if ( $("#previewTab").length > 0 ) {
+					return;
+				}
+				mw.loader.using( [ 'oojs-ui-core' ] ).done( function () {
+					var b = new OO.ui.ButtonInputWidget( {
+						label: "P",
+						id: 'previewTab'
+					});
+					b.on( 'click', function() {
+						if ( $(".ve-ui-toolbar-group-save").attr("aria-disabled") === "true" ) {
+							OO.ui.alert( msg.nothingToPreview ).done( function () {
+							});
+							return;
+						}
+						document.dispatchEvent(
+							new KeyboardEvent("keydown", {
+								key: "e",
+								keyCode: 80,
+								code: "",
+								which: 80,
+								altKey: true,
+								shiftKey: true,
+								ctrlKey: false,
+								metaKey: false
+							})
+						);
+						$(".oo-ui-icon-previous").addClass("oo-ui-icon-close").removeClass("oo-ui-icon-previous");
+					});
+					$( ".ve-ui-toolbar-group-save" ).after( ' ', b.$element );
+				});
+			} else {
+				return;
+			}
+		});
 		return;
 	}
+
 	document.getElementById('wikiPreview').style.display = 'block';
 	mw.loader.using(['oojs-ui-core', 'oojs-ui-widgets']).done(function() {
 		function TabPanelOneLayout(name, config) {
@@ -125,7 +182,6 @@ function proc() {
 		$('[aria-controls="editTab"]').on('click', openEditTab);
 		$(".oo-ui-menuLayout").css("height", "0px");
 		$(".editButtons").hide();
-
 		var wpSave = new OO.ui.ButtonWidget( {
 			label: $("input#wpSave").attr("value"),
 			id: 'tabPreviewWpSave',
