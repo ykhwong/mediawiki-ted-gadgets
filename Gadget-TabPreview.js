@@ -176,11 +176,14 @@ function proc() {
 		});
 		var index = new OO.ui.IndexLayout();
 		index.addTabPanels([tabPanel1, tabPanel2]);
-		$("#mw-content-text").prepend(index.$element);
-		$("#mw-content-text").prepend('<div style="height: 37px;"></div>');
+		$("#wikiPreview").before(index.$element);
+		$("#wikiPreview, #wikiDiff").css("padding-top", "37px");
 		$('[aria-controls="previewTab"]').on('click', openPreviewTab);
 		$('[aria-controls="editTab"]').on('click', openEditTab);
-		$(".oo-ui-menuLayout").css("height", "0px");
+		$(".oo-ui-menuLayout").css({
+			"position": "sticky",
+			"z-index": 10
+		});
 		$(".editButtons").hide();
 		var wpSave = new OO.ui.ButtonWidget( {
 			label: $("input#wpSave").attr("value"),
@@ -216,12 +219,15 @@ function proc() {
 			anchor: false,
 			$content: $("#editpage-copywarn")
 		});
-		$("#contentSub2").append(infoPopup.$element);
+		$(".oo-ui-menuLayout-menu").after(infoPopup.$element);
 		$("#tabPreviewWpSave").on("mouseover", function() {
 			infoPopup.toggle(true);
+			var top = $("#tabPreviewWpSave").offset().top + 35 - $(window)['scrollTop']();
+			var left = $("#tabPreviewWpSave").offset().left - 500 + $("#tabPreviewWpSave").width();
 			$(".prevInfoPopup").css({
-				"position": "absolute",
-				"top": "40px",
+				"position": "fixed",
+				"top": top,
+				"left": left,
 				"z-index": 999
 			});
 		}).on("mouseleave", function() {
@@ -232,7 +238,6 @@ function proc() {
 				$('[aria-controls="previewTab"]').trigger("click");
 			}
 		});
-		$("#wikiPreview").css("margin-top", "13px");
 		$("#previewTab, #editTab, #wpPreviewWidget").remove();
 	});
 }
