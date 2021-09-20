@@ -276,8 +276,15 @@ function proc() {
 			popupArr.push(tg);
 		});
 		$(document).keydown(function(e) {
-			if(e.altKey && e.shiftKey && e.which == 80) { // Alt-Shift-P
-				$('[aria-controls="previewTab"]').trigger("click");
+			if(e.altKey && e.shiftKey) {
+				switch (e.which) {
+					case 80: // Alt-Shift-P
+						$('[aria-controls="previewTab"]').trigger("click");
+						break;
+					case 69: // Alt-Shift-E
+						$('[aria-controls="editTab"]').trigger("click");
+						break;
+				}
 			}
 		});
 		$(window).scroll(function() {
