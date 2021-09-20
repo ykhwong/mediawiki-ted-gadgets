@@ -9,6 +9,8 @@
   */
 /* globals mw, OO, $ */
 
+$(function () {
+
 const msg = {
 	previewWaiting: '미리 보기를 생성하는 중...', // Generating a preview...
 	codeEditorTab: '코드 편집기', // Code editor
@@ -237,7 +239,7 @@ function proc() {
 			anchor: false,
 			$content: popupInfo
 		});
-		$(".oo-ui-menuLayout-menu").after(infoPopup.$element);
+		$(".oo-ui-menuLayout-menu:first").after(infoPopup.$element);
 
 		$("#tp-wpSummary").keyup(function() {
 			$("#wpSummary").val($(this).val());
@@ -316,3 +318,5 @@ function proc() {
 mw.loader.using('mediawiki.util', function() {
 	$(proc);
 });
+
+}());
