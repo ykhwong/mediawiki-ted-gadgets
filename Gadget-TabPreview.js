@@ -40,6 +40,7 @@ function openPreviewTab() {
 	}
 	qPreviewTextbox += document.getElementById('wpTextbox1').value;
 	$(".wikiEditor-ui, #editform, #catlinks, #wikiDiff").hide();
+	$("#wikiPreview").show();
 	$("#wikiPreview").html(msg.previewWaiting);
 	$('[aria-controls="previewTab"]').removeClass("oo-ui-optionWidget-unselected").addClass("oo-ui-optionWidget-selected");
 	$('[aria-controls="editTab"]').removeClass("oo-ui-optionWidget-selected").addClass("oo-ui-optionWidget-unselected");
@@ -278,6 +279,9 @@ function proc() {
 			if(e.altKey && e.shiftKey && e.which == 80) { // Alt-Shift-P
 				$('[aria-controls="previewTab"]').trigger("click");
 			}
+		});
+		$(window).scroll(function() {
+			infoPopup.toggle(false);
 		});
 		$("#previewTab, #editTab, #wpPreviewWidget").remove();
 	});
