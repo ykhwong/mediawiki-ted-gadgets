@@ -18,7 +18,6 @@ const msg = {
 
 var xhrArr = [];
 var popupArr = [];
-const urlParams = new URLSearchParams(window.location.search);
 
 function scrollUp() {
 	if ( $(".oo-ui-menuLayout").offset().top - $(window).scrollTop() === 0 ) {
@@ -132,6 +131,7 @@ function proc() {
 		}
 
 		onElementInserted('body', '.oo-ui-toolbar-bar .ve-ui-toolbar-group-save .oo-ui-tool-title', function(element) {
+			const urlParams = new URLSearchParams(window.location.search);
 			if (urlParams.get('veaction') === "editsource") {
 				if ( $("#previewTab").length > 0 ) {
 					return;
@@ -163,8 +163,6 @@ function proc() {
 					});
 					$( ".ve-ui-toolbar-group-save" ).after( ' ', b.$element );
 				});
-			} else {
-				return;
 			}
 		});
 		return;
