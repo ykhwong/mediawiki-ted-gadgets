@@ -17,6 +17,7 @@ const msg = {
 };
 
 var xhrArr = [];
+var popupArr = [];
 
 function openEditTab() {
 	$(".wikiEditor-ui, #editform").show();
@@ -210,6 +211,13 @@ function proc() {
 		$('#previewEditButtons').append(wpDiff.$element);
 		$('#previewEditButtons').append(editCancel.$element);
 
+		var cloneEditCheckBoxes = $(".editCheckboxes").html();
+		var popupInfo = $(
+			$("#wpSummaryLabel").html().replace(/ id="mw-/mg, ' id="tp-mw-').replace(/id="wp/mg, 'id="tp-wp') +
+			'<div style="height: 5px;"></div>' +
+			$(".editCheckboxes").html().replace(/ id="mw-/mg, ' id="tp-mw-').replace(/id="wp/mg, 'id="tp-wp') +
+			$("#editpage-copywarn").html()
+		);
 		var infoPopup = new OO.ui.PopupWidget({
 			padded: true,
 			width: 500,
@@ -217,10 +225,38 @@ function proc() {
 			position: 'above',
 			classes: ['prevInfoPopup'],
 			anchor: false,
-			$content: $("#editpage-copywarn")
+			$content: popupInfo
 		});
 		$(".oo-ui-menuLayout-menu").after(infoPopup.$element);
+
+		$("#tp-wpSummary").keyup(function() {
+			$("#wpSummary").val($(this).val());
+		});
+		$("#tp-mw-editpage-minoredit :checkbox").change(function() {
+			$("#mw-editpage-minoredit :checkbox").prop("checked", this.checked);
+		});
+		$("#editpage-copywarn, #wpSummaryLabel, #mw-editpage-minoredit").hide();
+		$("#tp-mw-editpage-watch, #tp-mw-editpage-watchlist-expiry").hide();
+
+		var keepInfoPopup = false;
+		infoPopup.$element.on("mouseenter", function() {
+			keepInfoPopup = true;
+		});
+		infoPopup.$element.on("mouseleave", function() {
+			keepInfoPopup = false;
+			var tg = setTimeout(function() {
+				if ( !keepInfoPopup ) {
+					infoPopup.toggle(false);
+				}
+			}, 1000);
+			popupArr.push(tg);
+		});
+
 		$("#tabPreviewWpSave").on("mouseover", function() {
+			for ( var i=0; i < popupArr.length; i++ ) {
+				clearTimeout(popupArr[i]);
+			}
+			popupArr = [];
 			infoPopup.toggle(true);
 			var top = $("#tabPreviewWpSave").offset().top + 35 - $(window)['scrollTop']();
 			var left = $("#tabPreviewWpSave").offset().left - 500 + $("#tabPreviewWpSave").width();
@@ -231,7 +267,12 @@ function proc() {
 				"z-index": 999
 			});
 		}).on("mouseleave", function() {
-			infoPopup.toggle(false);
+			var tg = setTimeout(function() {
+				if ( !keepInfoPopup ) {
+					infoPopup.toggle(false);
+				}
+			}, 1000);
+			popupArr.push(tg);
 		});
 		$(document).keydown(function(e) {
 			if(e.altKey && e.shiftKey && e.which == 80) { // Alt-Shift-P
