@@ -194,7 +194,7 @@ function proc() {
 		$('[aria-controls="previewTab"]').on('click', openPreviewTab);
 		$('[aria-controls="editTab"]').on('click', openEditTab);
 		$(".oo-ui-menuLayout").css({
-			"position": "sticky",
+			"position": window.document.documentMode ? "relative" : "sticky",
 			"z-index": 10
 		});
 		$(".editButtons").hide();
@@ -305,6 +305,7 @@ function proc() {
 			infoPopup.toggle(false);
 		});
 		$("input#wpDiff").on("click", function() {
+			$("#wikiDiff").css("padding-top", "37px");
 			$("#wpPreview").html("").hide();
 			$("#wikiDiff").show();
 		});
