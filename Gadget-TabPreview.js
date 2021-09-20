@@ -18,17 +18,19 @@ const msg = {
 
 var xhrArr = [];
 var popupArr = [];
+const urlParams = new URLSearchParams(window.location.search);
 
 function openEditTab() {
 	$(".wikiEditor-ui, #editform").show();
+	$("#wikiPreview").html("").hide();
 	$("#wikiDiff").hide();
-	$("#wikiPreview").html("");
 	for ( var i=0; i < xhrArr.length; i++ ) {
 		xhrArr[i].abort();
 	}
 	xhrArr = [];
 	$('[aria-controls="previewTab"]').addClass("oo-ui-optionWidget-unselected").removeClass("oo-ui-optionWidget-selected");
 	$('[aria-controls="editTab"]').addClass("oo-ui-optionWidget-selected").removeClass("oo-ui-optionWidget-unselected");
+	$("#editform").css("padding-top", "37px");
 }
 
 function openPreviewTab() {
@@ -42,6 +44,7 @@ function openPreviewTab() {
 	$(".wikiEditor-ui, #editform, #catlinks, #wikiDiff").hide();
 	$("#wikiPreview").show();
 	$("#wikiPreview").html(msg.previewWaiting);
+	$("#editform").css("padding-top", "37px");
 	$('[aria-controls="previewTab"]').removeClass("oo-ui-optionWidget-unselected").addClass("oo-ui-optionWidget-selected");
 	$('[aria-controls="editTab"]').removeClass("oo-ui-optionWidget-selected").addClass("oo-ui-optionWidget-unselected");
 	var xhr = $.post(mw.util.wikiScript('api'), {
@@ -122,9 +125,7 @@ function proc() {
 		}
 
 		onElementInserted('body', '.oo-ui-toolbar-bar .ve-ui-toolbar-group-save .oo-ui-tool-title', function(element) {
-			const urlParams = new URLSearchParams(window.location.search);
-			const myParam = urlParams.get('veaction');
-			if (myParam === "editsource") {
+			if (urlParams.get('veaction') === "editsource") {
 				if ( $("#previewTab").length > 0 ) {
 					return;
 				}
@@ -183,7 +184,6 @@ function proc() {
 			index.addTabPanels([tabPanel1]);
 		}
 		$("#wikiPreview").before(index.$element);
-		$("#wikiPreview, #wikiDiff").css("padding-top", "37px");
 		$('[aria-controls="previewTab"]').on('click', openPreviewTab);
 		$('[aria-controls="editTab"]').on('click', openEditTab);
 		$(".oo-ui-menuLayout").css({
@@ -297,7 +297,15 @@ function proc() {
 		$(window).scroll(function() {
 			infoPopup.toggle(false);
 		});
+		$("input#wpDiff").on("click", function() {
+			$("#wpPreview").html("").hide();
+			$("#wikiDiff").show();
+			$("#editform").css("padding-top", 0);
+		});
 		$("#previewTab, #editTab, #wpPreviewWidget").remove();
+		$("#wikiPreview").hide();
+		$("#wikiDiff, #wikiPreview").css("padding-top", "37px");
+		$("#editform").css("padding-top", "37px");
 	});
 }
 
