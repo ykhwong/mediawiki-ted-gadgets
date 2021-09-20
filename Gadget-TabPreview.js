@@ -30,7 +30,6 @@ function openEditTab() {
 	xhrArr = [];
 	$('[aria-controls="previewTab"]').addClass("oo-ui-optionWidget-unselected").removeClass("oo-ui-optionWidget-selected");
 	$('[aria-controls="editTab"]').addClass("oo-ui-optionWidget-selected").removeClass("oo-ui-optionWidget-unselected");
-	$("#editform").css("padding-top", "37px");
 }
 
 function openPreviewTab() {
@@ -44,7 +43,6 @@ function openPreviewTab() {
 	$(".wikiEditor-ui, #editform, #catlinks, #wikiDiff").hide();
 	$("#wikiPreview").show();
 	$("#wikiPreview").html(msg.previewWaiting);
-	$("#editform").css("padding-top", "37px");
 	$('[aria-controls="previewTab"]').removeClass("oo-ui-optionWidget-unselected").addClass("oo-ui-optionWidget-selected");
 	$('[aria-controls="editTab"]').removeClass("oo-ui-optionWidget-selected").addClass("oo-ui-optionWidget-unselected");
 	var xhr = $.post(mw.util.wikiScript('api'), {
@@ -300,7 +298,6 @@ function proc() {
 		$("input#wpDiff").on("click", function() {
 			$("#wpPreview").html("").hide();
 			$("#wikiDiff").show();
-			$("#editform").css("padding-top", 0);
 		});
 		$("#previewTab, #editTab, #wpPreviewWidget").remove();
 		$("#wikiPreview").hide();
