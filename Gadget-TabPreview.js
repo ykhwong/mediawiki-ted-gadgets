@@ -34,7 +34,7 @@ function openEditTab() {
 function openPreviewTab() {
 	var divPreview, $previewTab, qPreviewTextbox;
 	divPreview = document.getElementById('wikiPreview');
-	qPreviewTextbox = '<div>{{MediaWiki:Previewnote}}</div><hr>\n';
+	qPreviewTextbox = "";
 	if(document.editform.wpSection.value === 'new') {
 		qPreviewTextbox += '== ' + document.editform.wpSummary.value + ' ==\n';
 	}
@@ -177,7 +177,11 @@ function proc() {
 			id: 'previewTab'
 		});
 		var index = new OO.ui.IndexLayout();
-		index.addTabPanels([tabPanel1, tabPanel2]);
+		if ( $("#wpPreviewWidget").length > 0 ) {
+			index.addTabPanels([tabPanel1, tabPanel2]);
+		} else {
+			index.addTabPanels([tabPanel1]);
+		}
 		$("#wikiPreview").before(index.$element);
 		$("#wikiPreview, #wikiDiff").css("padding-top", "37px");
 		$('[aria-controls="previewTab"]').on('click', openPreviewTab);
@@ -240,17 +244,25 @@ function proc() {
 		$("#tp-mw-editpage-watch, #tp-mw-editpage-watchlist-expiry").hide();
 
 		var keepInfoPopup = false;
+		function handlePopup(sec) {
+			var tg = setTimeout(function() {
+				if ( !keepInfoPopup && !$("#tp-wpSummary").is(':focus') ) {
+					infoPopup.toggle(false);
+				}
+			}, sec * 1000);
+			popupArr.push(tg);
+		}
+
+		$("#tp-wpSummary").on("focusout", function() {
+			handlePopup(0);
+		});
+
 		infoPopup.$element.on("mouseenter", function() {
 			keepInfoPopup = true;
 		});
 		infoPopup.$element.on("mouseleave", function() {
 			keepInfoPopup = false;
-			var tg = setTimeout(function() {
-				if ( !keepInfoPopup ) {
-					infoPopup.toggle(false);
-				}
-			}, 1000);
-			popupArr.push(tg);
+			handlePopup(0.5);
 		});
 
 		$("#tabPreviewWpSave").on("mouseover", function() {
@@ -268,12 +280,7 @@ function proc() {
 				"z-index": 999
 			});
 		}).on("mouseleave", function() {
-			var tg = setTimeout(function() {
-				if ( !keepInfoPopup ) {
-					infoPopup.toggle(false);
-				}
-			}, 1000);
-			popupArr.push(tg);
+			handlePopup(0.5);
 		});
 		$(document).keydown(function(e) {
 			if(e.altKey && e.shiftKey) {
