@@ -20,7 +20,15 @@ var xhrArr = [];
 var popupArr = [];
 const urlParams = new URLSearchParams(window.location.search);
 
+function scrollUp() {
+	if ( $(".oo-ui-menuLayout").offset().top - $(window).scrollTop() === 0 ) {
+		window.focus();
+		window.scrollTo(0, 0);
+	}
+}
+
 function openEditTab() {
+	scrollUp();
 	$(".wikiEditor-ui, #editform").show();
 	$("#wikiPreview").html("").hide();
 	$("#wikiDiff").hide();
@@ -34,6 +42,7 @@ function openEditTab() {
 
 function openPreviewTab() {
 	var divPreview, $previewTab, qPreviewTextbox;
+	scrollUp();
 	divPreview = document.getElementById('wikiPreview');
 	qPreviewTextbox = "";
 	if(document.editform.wpSection.value === 'new') {
@@ -42,7 +51,7 @@ function openPreviewTab() {
 	qPreviewTextbox += document.getElementById('wpTextbox1').value;
 	$(".wikiEditor-ui, #editform, #catlinks, #wikiDiff").hide();
 	$("#wikiPreview").show();
-	$("#wikiPreview").html(msg.previewWaiting);
+	$("#wikiPreview").html('<br />' + msg.previewWaiting);
 	$('[aria-controls="previewTab"]').removeClass("oo-ui-optionWidget-unselected").addClass("oo-ui-optionWidget-selected");
 	$('[aria-controls="editTab"]').removeClass("oo-ui-optionWidget-selected").addClass("oo-ui-optionWidget-unselected");
 	var xhr = $.post(mw.util.wikiScript('api'), {
@@ -59,7 +68,7 @@ function openPreviewTab() {
 		var i, htmlText, htmlCat, langList, langLine, langLink;
 
 		htmlText = data.parse.text['*'];
-		divPreview.innerHTML = htmlText;
+		divPreview.innerHTML = '<br />' + htmlText;
 		previewnote = document.getElementById('previewnote-fr');
 		if(previewnote) {
 			tablePreview = previewnote.getElementsByTagName('table')[0];
