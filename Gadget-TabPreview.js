@@ -310,7 +310,10 @@ function proc() {
 			$("#wikiDiff").show();
 		});
 		$("#previewTab, #editTab, #wpPreviewWidget").remove();
-		$("#wikiPreview").hide();
+		const urlParams = new URLSearchParams(window.location.search);
+		if (urlParams.get('action') !== "submit") {
+			$("#wikiPreview").hide();
+		}
 		$("#wikiDiff, #wikiPreview").css("padding-top", "37px");
 		$("#editform").css("padding-top", "37px");
 	});
