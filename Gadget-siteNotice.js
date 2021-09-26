@@ -101,7 +101,7 @@ function procDismiss() {
 				'position': 'relative',
 				'top': '0px',
 				'right': '7px',
-				'margin-left': '-17px', /* dismiss image size */
+				'padding-left': '5px',
 				'text-align': 'right',
 				'float': 'right'
 			}
