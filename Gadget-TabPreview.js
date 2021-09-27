@@ -15,7 +15,8 @@ const msg = {
 	previewWaiting: '미리 보기를 생성하는 중...', // Generating a preview...
 	codeEditorTab: '코드 편집기', // Code editor
 	realtimePreviewTab: '실시간 미리 보기', // Real-time preview
-	nothingToPreview: '변경 사항이 없어서 미리 보기를 생성할 수 없습니다.' // Could not generate a preview because no changes are found
+	nothingToPreview: '변경 사항이 없어서 미리 보기를 생성할 수 없습니다.', // Could not generate a preview because no changes are found
+	altShiftE: '[alt-shift-e]'
 };
 
 var xhrArr = [];
@@ -191,8 +192,16 @@ function proc() {
 			index.addTabPanels([tabPanel1]);
 		}
 		$("#wikiPreview").before(index.$element);
+		var editTabTitle = "";
+		if ( /^\[/.test( $("input#wpPreview").attr("title") ) ) {
+			editTabTitle = msg.altShiftE + " " + $("#ca-edit a").attr("title");
+		} else {
+			editTabTitle = $("#ca-edit a").attr("title") + " " + msg.altShiftE;
+		}
 		$('[aria-controls="previewTab"]').on('click', openPreviewTab);
+		$('[aria-controls="previewTab"]').prop('title', $("input#wpPreview").attr("title"));
 		$('[aria-controls="editTab"]').on('click', openEditTab);
+		$('[aria-controls="editTab"]').prop('title', editTabTitle);
 		$(".oo-ui-menuLayout").css({
 			"position": window.document.documentMode ? "relative" : "sticky",
 			"z-index": 10
@@ -200,11 +209,13 @@ function proc() {
 		$(".editButtons").hide();
 		var wpSave = new OO.ui.ButtonWidget( {
 			label: $("input#wpSave").attr("value"),
+			title: $("input#wpSave").attr("title"),
 			id: 'tabPreviewWpSave',
 			classes: [ 'oo-ui-widget', 'oo-ui-widget-enabled', 'oo-ui-inputWidget', 'oo-ui-buttonElement', 'oo-ui-buttonElement-framed', 'oo-ui-labelElement', 'oo-ui-flaggedElement-progressive', 'oo-ui-flaggedElement-primary', 'oo-ui-buttonInputWidget', 'oo-ui-inputWidget-input', 'oo-ui-buttonElement-button' ]
 		});
 		var wpDiff = new OO.ui.ButtonWidget( {
 			label: $("input#wpDiff").attr("value"),
+			title: $("input#wpDiff").attr("title"),
 			id: 'tabPreviewWpDiff'
 		});
 		var editCancel = new OO.ui.ButtonWidget( {
@@ -290,7 +301,7 @@ function proc() {
 			handlePopup(0.5);
 		});
 		$(document).keydown(function(e) {
-			if(e.altKey && e.shiftKey) {
+			if( e.altKey && e.shiftKey ) {
 				switch (e.which) {
 					case 80: // Alt-Shift-P
 						$('[aria-controls="previewTab"]').trigger("click");
@@ -298,6 +309,11 @@ function proc() {
 					case 69: // Alt-Shift-E
 						$('[aria-controls="editTab"]').trigger("click");
 						break;
+				}
+			}
+			if( e.which === 13 ) {
+				if ( $("#tp-wpSummary").is(':focus') ) {
+					$("input#wpSave").trigger("click");
 				}
 			}
 		});
