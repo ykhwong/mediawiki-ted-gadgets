@@ -108,7 +108,12 @@ function procDismiss() {
 		);
 	}
 	$("#siteNoticeLocal ul").css({
-		"list-style": "none"
+		"list-style": "none",
+		"text-align": "left",
+		"display": "table",
+		"margin": "0 auto",
+		"padding-left": "10px",
+		"max-width": "calc(100% - 20px)"
 	});
 
 	$( '.mw-dismissable-notice-close2' )
