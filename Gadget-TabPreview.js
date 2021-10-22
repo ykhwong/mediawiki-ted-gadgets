@@ -271,6 +271,18 @@ function proc() {
 			popupArr.push(tg);
 		}
 
+		function showPopup() {
+			infoPopup.toggle(true);
+			var top = $("#tabPreviewWpSave").offset().top + 35 - $(window)['scrollTop']();
+			var left = $("#tabPreviewWpSave").offset().left - 500 + $("#tabPreviewWpSave").width();
+			$(".prevInfoPopup").css({
+				"position": "fixed",
+				"top": top,
+				"left": left,
+				"z-index": 999
+			});
+		}
+
 		$("#tp-wpSummary").on("focusout", function() {
 			handlePopup(0);
 		});
@@ -288,15 +300,7 @@ function proc() {
 				clearTimeout(popupArr[i]);
 			}
 			popupArr = [];
-			infoPopup.toggle(true);
-			var top = $("#tabPreviewWpSave").offset().top + 35 - $(window)['scrollTop']();
-			var left = $("#tabPreviewWpSave").offset().left - 500 + $("#tabPreviewWpSave").width();
-			$(".prevInfoPopup").css({
-				"position": "fixed",
-				"top": top,
-				"left": left,
-				"z-index": 999
-			});
+			showPopup();
 		}).on("mouseleave", function() {
 			handlePopup(0.5);
 		});
@@ -308,6 +312,10 @@ function proc() {
 						break;
 					case 69: // Alt-Shift-E
 						$('[aria-controls="editTab"]').trigger("click");
+						break;
+					case 66: // Alt-Shift-B
+						showPopup();
+						$("#tp-wpSummary").focus();
 						break;
 				}
 			}
