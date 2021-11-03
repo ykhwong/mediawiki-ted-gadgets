@@ -16,13 +16,13 @@ var cookieData = {
 };
 
 function procCache() {
-	if ((localStorage[cookieData.dismissClicked] === undefined ||
-		localStorage[cookieData.dismissClicked] === "false") &&
-		localStorage[cookieData.noticeData] !== undefined)
+	if ((mw.storage.get( cookieData.dismissClicked ) === undefined ||
+		mw.storage.get( cookieData.dismissClicked ) === "false") &&
+		mw.storage.get( cookieData.noticeData ) !== undefined)
 	{
 		if ( $("#siteNotice").length > 0 ) {
 			tmpSiteNotice = $("#siteNotice").html();
-			$("#siteNotice").html(localStorage[cookieData.noticeData]);
+			$("#siteNotice").html(mw.storage.get( cookieData.noticeData ));
 		}
 	}
 }
@@ -129,11 +129,11 @@ function procDismiss() {
 					expires: 30,
 					path: '/'
 				} );
-				localStorage[cookieData.dismissClicked] = true;
+				mw.storage.set( cookieData.dismissClicked, "true" );
 			}
 		});
 
-	localStorage[cookieData.noticeData] = $("#siteNotice").html();
+	mw.storage.set( cookieData.noticeData, $("#siteNotice").html() );
 }
 
 function procApi() {
@@ -161,24 +161,24 @@ function procApi() {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
 				// If the user has the notice dismissal cookie set, exit.
 				if ( $.cookie( cookieName ) !== sitenoticeId ) {
-					localStorage[cookieData.dismissClicked] = false;
+					mw.storage.set( cookieData.dismissClicked, "false" );
 					$("#siteNotice").append('<div id="siteNoticeLocal" style="' + sitenoticeStyle + '">' + gadgetSiteNotice + '</div>');
 					procDismiss();
 				}
 			} else {
-				localStorage[cookieData.noticeData] = tmpSiteNotice;
+				mw.storage.set( cookieData.noticeData, tmpSiteNotice );
 			}
 			return;
 		}
 
-		localStorage[cookieData.noticeData] = tmpSiteNotice;
+		mw.storage.set( cookieData.noticeData, tmpSiteNotice );
 		if (html2text(gadgetAnonnotice).trim().length === 0) {
 			return;
 		} else if (/^\s*-\s*$/.test(html2text(gadgetAnonnotice).trim())) {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
 				// If the user has the notice dismissal cookie set, exit.
 				if ( $.cookie( cookieName ) !== sitenoticeId ) {
-					localStorage[cookieData.dismissClicked] = false;
+					mw.storage.set( cookieData.dismissClicked, "false" );
 					$("#siteNotice").append('<div id="siteNoticeLocal" style="' + sitenoticeStyle + '">' + gadgetSiteNotice + '</div>');
 					procDismiss();
 					return;
@@ -187,7 +187,7 @@ function procApi() {
 				}
 			}
 		} else {
-			localStorage[cookieData.dismissClicked] = false;
+			mw.storage.set( cookieData.dismissClicked, "false" );
 			$("#siteNotice").append('<div id="siteNoticeLocal" style="' + sitenoticeStyle + '">' + gadgetAnonnotice + '</div>');
 			procDismiss();
 			return;
