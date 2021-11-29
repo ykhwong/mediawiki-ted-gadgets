@@ -22,6 +22,7 @@ mw.hook('wikipage.content').add(function() {
 		var sibl;
 		var txt = '#' + $.escapeSelector($( li )
 			.find( 'span.toctext' ).text()
+			.replace(/‎+/g, "")
 			.replace(/\s+/g, "_"));
 
 		arr_ids.forEach(function (item) {
@@ -42,14 +43,22 @@ mw.hook('wikipage.content').add(function() {
 		}
 
 		while ( sibl.html() && sibl[0].nodeName.toLowerCase() !== "h2" ) {
-			var filename = sibl.find('img').attr("alt");
-			switch (filename) {
-				case "Yes check.svg":
-				case "X mark.svg":
-				case "Yellow check.svg":
-				case "U2713.svg":
-					checked = true;
+			var imgTag = sibl.find('img');
+			if ( imgTag.length > 0 ) {
+				for ( var i2 = 0; i2 < imgTag.length; i2++ ) {
+					var filename = $(imgTag[i2]).attr("alt");
+					switch (filename) {
+						case "Yes check.svg":
+						case "X mark.svg":
+						case "Yellow check.svg":
+						case "U2713.svg":
+							checked = true;
+							break;
+					}
+				}
+				if ( checked ) {
 					break;
+				}
 			}
 			if ( checked ) {
 				break;
