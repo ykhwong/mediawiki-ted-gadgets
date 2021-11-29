@@ -60,9 +60,6 @@ mw.hook('wikipage.content').add(function() {
 					break;
 				}
 			}
-			if ( checked ) {
-				break;
-			}
 			sibl = sibl.next();
 		}
 
