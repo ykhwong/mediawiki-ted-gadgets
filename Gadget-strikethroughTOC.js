@@ -44,9 +44,19 @@ mw.hook('wikipage.content').add(function() {
 
 		while ( sibl.html() && sibl[0].nodeName.toLowerCase() !== "h2" ) {
 			var imgTag = sibl.find('img');
+			var pp = sibl.clone().find('noscript').contents().unwrap();
+			if ( pp.length > 0 ) {
+				imgTag = pp;
+			}
+
 			if ( imgTag.length > 0 ) {
 				for ( var i2 = 0; i2 < imgTag.length; i2++ ) {
-					var filename = $(imgTag[i2]).attr("alt");
+					var filename;
+					if ( pp.length > 0 ) {
+						filename = $($(imgTag[i2]).text()).attr("alt");
+					} else {
+						filename = $(imgTag[i2]).attr("alt");
+					}
 					switch (filename) {
 						case "Yes check.svg":
 						case "X mark.svg":
