@@ -63,6 +63,7 @@ function convLangLinks() {
 			.replace(/^Bhojpuri$/, "보즈푸리어")
 			.replace(/^Tulu$/, "툴루어")
 			.replace(/^Norfuk \/ Pitkern$/, "노퍽어 / 핏케언")
+			.replace(/^Mingrelian$/, "메그렐어")
 			.replace(/^Dagbani$/, "다그바니어");
 
 			$(autonym[i]).text(lang);
