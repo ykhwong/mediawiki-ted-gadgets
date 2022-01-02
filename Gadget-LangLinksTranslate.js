@@ -63,6 +63,18 @@ function convLangLinks() {
 			.replace(/^Bhojpuri$/, "보즈푸리어")
 			.replace(/^Tulu$/, "툴루어")
 			.replace(/^Norfuk \/ Pitkern$/, "노퍽어 / 핏케언")
+			.replace(/^Guianan Creole$/, "기아나 크레올어")
+			.replace(/^Ligurian$/, "리구리아어")
+			.replace(/^Livvi-Karelian$/, "리비비카렐리아어")
+			.replace(/^Saterland Frisian$/, "동프리지아어")
+			.replace(/^Veps$/, "벱스어")
+			.replace(/^Western Punjabi$/, "서펀자브어")
+			.replace(/^Kabiye$/, "카비예어")
+			.replace(/^Russia Buriat$/, "러시아 부랴트어")
+			.replace(/^Saraiki$/, "사라이키어")
+			.replace(/^Central Bikol$/, "중앙비콜어")
+			.replace(/^Tayal$/, "타얄어")
+			.replace(/^Mon$/, "몬어")
 			.replace(/^Mingrelian$/, "메그렐어")
 			.replace(/^Dagbani$/, "다그바니어");
 
