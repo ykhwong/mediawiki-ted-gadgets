@@ -11,13 +11,13 @@
 
 $(function () {
 
-const msg = {
+mw.messages.set({
 	previewWaiting: '미리 보기를 생성하는 중...', // Generating a preview...
 	codeEditorTab: '코드 편집기', // Code editor
 	realtimePreviewTab: '실시간 미리 보기', // Real-time preview
 	nothingToPreview: '변경 사항이 없어서 미리 보기를 생성할 수 없습니다.', // Could not generate a preview because no changes are found
 	altShiftE: '[alt-shift-e]'
-};
+});
 
 var xhrArr = [];
 var popupArr = [];
@@ -53,7 +53,7 @@ function openPreviewTab() {
 	qPreviewTextbox += document.getElementById('wpTextbox1').value;
 	$(".wikiEditor-ui, #editform, #catlinks, #wikiDiff").hide();
 	$("#wikiPreview").show();
-	$("#wikiPreview").html('<br />' + msg.previewWaiting);
+	$("#wikiPreview").html('<br />' + mw.msg("previewWaiting"));
 	$('[aria-controls="previewTab"]').removeClass("oo-ui-optionWidget-unselected").addClass("oo-ui-optionWidget-selected");
 	$('[aria-controls="editTab"]').removeClass("oo-ui-optionWidget-selected").addClass("oo-ui-optionWidget-unselected");
 	var xhr = $.post(mw.util.wikiScript('api'), {
@@ -146,7 +146,7 @@ function proc() {
 					});
 					b.on( 'click', function() {
 						if ( $(".ve-ui-toolbar-group-save").attr("aria-disabled") === "true" ) {
-							OO.ui.alert( msg.nothingToPreview ).done( function () {
+							OO.ui.alert( mw.msg("nothingToPreview") ).done( function () {
 							});
 							return;
 						}
@@ -178,11 +178,11 @@ function proc() {
 		}
 		OO.inheritClass(TabPanelOneLayout, OO.ui.TabPanelLayout);
 		var tabPanel1 = new TabPanelOneLayout('one', {
-			label: msg.codeEditorTab,
+			label: mw.msg("codeEditorTab"),
 			id: 'editTab'
 		});
 		var tabPanel2 = new OO.ui.TabPanelLayout('two', {
-			label: msg.realtimePreviewTab,
+			label: mw.msg("realtimePreviewTab"),
 			id: 'previewTab'
 		});
 		var index = new OO.ui.IndexLayout();
@@ -194,9 +194,9 @@ function proc() {
 		$("#wikiPreview").before(index.$element);
 		var editTabTitle = "";
 		if ( /^\[/.test( $("input#wpPreview").attr("title") ) ) {
-			editTabTitle = msg.altShiftE + " " + $("#ca-edit a").attr("title");
+			editTabTitle = mw.msg("altShiftE") + " " + $("#ca-edit a").attr("title");
 		} else {
-			editTabTitle = $("#ca-edit a").attr("title") + " " + msg.altShiftE;
+			editTabTitle = $("#ca-edit a").attr("title") + " " + mw.msg("altShiftE");
 		}
 		$('[aria-controls="previewTab"]').on('click', openPreviewTab);
 		$('[aria-controls="previewTab"]').prop('title', $("input#wpPreview").attr("title"));
