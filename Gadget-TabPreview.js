@@ -1,7 +1,7 @@
 /**
   * tabPreview
   *
-  * Provides tabs for code editor and real-time preview.
+  * Provides tabs for code editor and preview.
   *
   * Thanks to [[:fr:Utilisateur:Seb35]] for the qPreview ([[:fr:MediaWiki:Gadget-QPreview.js]]).
   * Tabs implemented by [[:ko:User:Ykhwong]]
@@ -14,7 +14,7 @@ $(function () {
 mw.messages.set({
 	previewWaiting: '미리 보기를 생성하는 중...', // Generating a preview...
 	codeEditorTab: '코드 편집기', // Code editor
-	realtimePreviewTab: '실시간 미리 보기', // Real-time preview
+	previewTab: '미리 보기', // Preview
 	nothingToPreview: '변경 사항이 없어서 미리 보기를 생성할 수 없습니다.', // Could not generate a preview because no changes are found
 	altShiftE: '[alt-shift-e]'
 });
@@ -182,7 +182,7 @@ function proc() {
 			id: 'editTab'
 		});
 		var tabPanel2 = new OO.ui.TabPanelLayout('two', {
-			label: mw.msg("realtimePreviewTab"),
+			label: mw.msg("previewTab"),
 			id: 'previewTab'
 		});
 		var index = new OO.ui.IndexLayout();
