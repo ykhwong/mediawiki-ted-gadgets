@@ -6,7 +6,7 @@ $(function () {
 	const sidebarWidth = 200;
 	const minHeight = 400;
 	const refreshRate = 10;
-	const isVector = ( mw.config.get("skin") === "vector" );
+	const isVector = /vector/.test( mw.config.get("skin") );
 	const isLegacyVector = ( $(".skin-vector-legacy").length > 0 );
 	var preMarginRight = $("#mw-content-text").css("margin-right");
 	var preMinHeight = $("#mw-content-text").css("minHeight");
