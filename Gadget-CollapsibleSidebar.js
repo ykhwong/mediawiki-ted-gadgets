@@ -169,7 +169,7 @@ function sidebarHiddenInit() {
 	// Should only work with vector skin
 	// Exception handling: Blankpage and RTRC
 	if (
-		mw.config.get( 'skin' ) !== 'vector' ||
+		! /vector/.test( mw.config.get( 'skin' ) ) ||
 		$(".skin-vector-legacy").length === 0 || $(".mw-special-Blankpage").length !== 0
 	) {
 		return;
