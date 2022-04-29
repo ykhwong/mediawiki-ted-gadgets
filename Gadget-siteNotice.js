@@ -5,7 +5,7 @@
 * @author ykhwong
 * Reference: https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/DismissableSiteNotice/+/master/modules/ext.dismissableSiteNotice.js
 */
-const noticeGrpPage = '위키백과:소도구/noticeGrp';
+const noticeGrpPage = '틀:소도구/noticeGrp';
 const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
 const isMobile = /\.m\.wikipedia\.org/.test(window.location.host);
 var tmpSiteNotice = "";
