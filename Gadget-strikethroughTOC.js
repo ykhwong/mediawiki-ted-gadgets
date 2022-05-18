@@ -24,6 +24,7 @@ mw.hook('wikipage.content').add(function() {
 			.find( 'span.toctext' ).text()
 			.replace(/‎+/g, "")
 			.replace(/\s+/g, "_"));
+		var nTxt;
 
 		arr_ids.forEach(function (item) {
 			if ( item === txt ) {
@@ -37,6 +38,7 @@ mw.hook('wikipage.content').add(function() {
 			txt = txt + "_" + cnt;
 		}
 
+		nTxt = txt.replace(/^#/, "#toc-");
 		sibl = $(txt).parent().next();
 		if ( sibl.html() === undefined ) {
 			return;
@@ -77,6 +79,7 @@ mw.hook('wikipage.content').add(function() {
 			return;
 		}
 
+		$(nTxt).wrap("<strike>");
 		hrefNode = toc.getElementsByClassName("toclevel-1")[i]
 			.getElementsByTagName("a")[0];
 		hrefNode.innerHTML = "<del style='color: gray !important'>" +
