@@ -79,10 +79,10 @@ mw.hook('wikipage.content').add(function() {
 			return;
 		}
 
-		$(nTxt).wrap("<strike>");
+		$(nTxt).wrap("<del style='color: gray !important;'>");
 		hrefNode = toc.getElementsByClassName("toclevel-1")[i]
 			.getElementsByTagName("a")[0];
-		hrefNode.innerHTML = "<del style='color: gray !important'>" +
+		hrefNode.innerHTML = "<del style='color: gray !important;'>" +
 			hrefNode.innerHTML + "</del>";
 	});
 });
