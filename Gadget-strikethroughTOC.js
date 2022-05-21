@@ -2,7 +2,19 @@ mw.hook('wikipage.content').add(function() {
 	var arr_ids = [];
 	var toc;
 	var fileUrl = "";
+	var filename = "";
 	const waitImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Pictogram_voting_wait_green.svg/14px-Pictogram_voting_wait_green.svg.png';
+	const validImgs = [
+		"Yes check.svg",
+		"X mark.svg",
+		"Yellow check.svg",
+		"U2713.svg"
+	];
+
+	function addImg(nTxt, fileUrl, lvl) {
+		$(nTxt).prepend("<img width='14' height='14' src=" + fileUrl + ">");
+		$($($( '#toc li.toclevel-1' )[lvl]).find("a")[0]).prepend("<img style='padding-right: 4px;' width='14' height='14' src=" + fileUrl + ">");
+	}
 
 	if (
 		mw.config.get('wgNamespaceNumber') !== 4 ||
@@ -55,7 +67,6 @@ mw.hook('wikipage.content').add(function() {
 
 			if ( imgTag.length > 0 ) {
 				for ( var i2 = 0; i2 < imgTag.length; i2++ ) {
-					var filename;
 					if ( pp.length > 0 ) {
 						filename = $($(imgTag[i2]).text()).attr("alt");
 						fileUrl = $($(imgTag[i2]).text()).attr("src");
@@ -63,13 +74,11 @@ mw.hook('wikipage.content').add(function() {
 						filename = $(imgTag[i2]).attr("alt");
 						fileUrl = $(imgTag[i2]).attr("src");
 					}
-					switch (filename) {
-						case "Yes check.svg":
-						case "X mark.svg":
-						case "Yellow check.svg":
-						case "U2713.svg":
+					for ( var i3 = 0; i3 < validImgs.length; i3++ ) {
+						if ( filename === validImgs[i3] ) {
 							checked = true;
 							break;
+						}
 					}
 				}
 				if ( checked ) {
@@ -80,12 +89,23 @@ mw.hook('wikipage.content').add(function() {
 		}
 
 		if ( !checked ) {
-			$(nTxt).prepend("<img width='14' height='14' src='" + waitImg + "'>");
-			$($($( '#toc li.toclevel-1' )[i]).find("a")[0]).prepend("<img style='padding-right: 4px;' width='14' height='14' src='" + waitImg + "'>");
+			addImg(nTxt, waitImg, i);
 			return;
 		}
 
-		$(nTxt).prepend("<img width='14' height='14' src=" + fileUrl + ">");
-		$($($( '#toc li.toclevel-1' )[i]).find("a")[0]).prepend("<img style='padding-right: 4px;' width='14' height='14' src=" + fileUrl + ">");
+		checked = false;
+		for ( var i4 = 0; i4 < validImgs.length; i4++ ) {
+			if ( filename === validImgs[i4] ) {
+				addImg(nTxt, fileUrl, i);
+				checked = true;
+				break;
+			}
+		}
+
+		if ( !checked ) {
+			addImg(nTxt, waitImg, i);
+			return;
+		}
+
 	});
 });
