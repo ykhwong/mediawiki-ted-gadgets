@@ -1,6 +1,8 @@
 mw.hook('wikipage.content').add(function() {
 	var arr_ids = [];
 	var toc;
+	var fileUrl = "";
+	const waitImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Pictogram_voting_wait_green.svg/14px-Pictogram_voting_wait_green.svg.png';
 
 	if (
 		mw.config.get('wgNamespaceNumber') !== 4 ||
@@ -38,7 +40,7 @@ mw.hook('wikipage.content').add(function() {
 			txt = txt + "_" + cnt;
 		}
 
-		nTxt = txt.replace(/^#/, "#toc-");
+		nTxt = txt.replace(/^#/, "#toc-") + " .sidebar-toc-text";
 		sibl = $(txt).parent().next();
 		if ( sibl.html() === undefined ) {
 			return;
@@ -56,8 +58,10 @@ mw.hook('wikipage.content').add(function() {
 					var filename;
 					if ( pp.length > 0 ) {
 						filename = $($(imgTag[i2]).text()).attr("alt");
+						fileUrl = $($(imgTag[i2]).text()).attr("src");
 					} else {
 						filename = $(imgTag[i2]).attr("alt");
+						fileUrl = $(imgTag[i2]).attr("src");
 					}
 					switch (filename) {
 						case "Yes check.svg":
@@ -76,13 +80,12 @@ mw.hook('wikipage.content').add(function() {
 		}
 
 		if ( !checked ) {
+			$(nTxt).prepend("<img width='14' height='14' src='" + waitImg + "'>");
+			$($($( '#toc li.toclevel-1' )[i]).find("a")[0]).prepend("<img style='padding-right: 4px;' width='14' height='14' src='" + waitImg + "'>");
 			return;
 		}
 
-		$(nTxt).wrap("<del>");
-		hrefNode = toc.getElementsByClassName("toclevel-1")[i]
-			.getElementsByTagName("a")[0];
-		hrefNode.innerHTML = "<del style='color: gray !important;'>" +
-			hrefNode.innerHTML + "</del>";
+		$(nTxt).prepend("<img width='14' height='14' src=" + fileUrl + ">");
+		$($($( '#toc li.toclevel-1' )[i]).find("a")[0]).prepend("<img style='padding-right: 4px;' width='14' height='14' src=" + fileUrl + ">");
 	});
 });
