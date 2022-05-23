@@ -1,4 +1,4 @@
-mw.hook('wikipage.content').add(function() {
+$(function () {
 	var arr_ids = [];
 	var toc;
 	var fileUrl = "";
