@@ -177,7 +177,7 @@ $(function () {
 				var info = 
 					'<div title="' + targetPage + '" style="display:inline-block; width: ' +
 					(sidebarWidth - 40) + 'px; white-space: nowrap; overflow: hidden; vertical-align: text-top;">' +
-					'<a href="/wiki/' + targetPage + '">' + targetPage + '</a></div>' +
+					'<a href="/wiki/' + encodeURIComponent(targetPage) + '">' + targetPage + '</a></div>' +
 					'<div style="display:inline-block; white-space: nowrap; padding-left: 5px; color:green; font-size:smaller; vertical-align: text-top;">' +
 					changedDate + "</div>" + '<br />';
 				localStorage['mw-recentchanges-sidebar'] += info;
