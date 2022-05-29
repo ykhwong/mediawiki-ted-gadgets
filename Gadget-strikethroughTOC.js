@@ -19,7 +19,8 @@ $(function () {
 	if (
 		mw.config.get('wgNamespaceNumber') !== 4 ||
 		mw.config.get('wgAction') !== "view" ||
-		! /[\s_]+(요청|신청)(\/|$)/.test(mw.config.get('wgTitle'))
+		! /[\s_]+(요청|신청)(\/|$)/.test(mw.config.get('wgTitle')) ||
+		/문서[\s_]+작성[\s_]+요청(\/|$)/.test(mw.config.get('wgTitle'))
 	) {
 		return;
 	}
