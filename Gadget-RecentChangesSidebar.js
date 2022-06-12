@@ -8,6 +8,7 @@ $(function () {
 	const refreshRate = 10;
 	const isVector = /vector/.test( mw.config.get("skin") );
 	const isLegacyVector = ( $(".skin-vector-legacy").length > 0 );
+	const pageViewsURI = '//wikimedia.org/api/rest_v1/metrics/pageviews/top/ko.wikipedia.org/all-access';
 	var preMarginRight = $("#mw-content-text").css("margin-right");
 	var preMinHeight = $("#mw-content-text").css("minHeight");
 	var options = {
@@ -59,7 +60,13 @@ $(function () {
 		"border-bottom": "solid 1px #c8ccd1",
 		"overflow-x": "hidden !important"
 	};
-
+	var pgViewSidebarSTyle = {
+		"border": "1px solid grey",
+		"padding": "4px",
+		"font-size": "smaller",
+		"margin-top": "5px"
+	};
+	
 	if ($(".diff").length > 0) return;
 
 	if ( ! isVector ) {
@@ -152,6 +159,27 @@ $(function () {
 		return e.scrollHeight>e.clientHeight||e.scrollWidth>e.clientWidth;
 	}
 
+	function getPageViews(info, date) {
+		var retData;
+		var cnt = 0;
+		retData = '<div id="pgViewSidebar"><div style="font-weight: bold;">탑뷰: ' + date.year + '년 ' + date.month + '월 ' + date.day + '일</div>';
+		retData += '<ol>';
+		$.each( info.items[0].articles, function( i, item ) {
+			if (/^(틀|위키백과|특수|도움말):/.test(item.article)) {
+				return true;
+			}
+			cnt++;
+			retData += 
+			'<li><a href="/wiki/' + encodeURIComponent(item.article) + '">' +
+			item.article.replace(/_/g, " ") + "</a></li>";
+			if ( cnt === 10 ) {
+				return false;
+			}
+		});
+		retData += '</ol></div>';
+		return retData;
+	}
+	
 	function refresh() {
 		if (!$("#rcSidebar").isInViewport() || document.hidden || document.msHidden || document.webkitHidden || document.mozHidden ||
 		localStorage['mw-recentchanges-sidebar-state'] === 'hidden') {
@@ -160,7 +188,11 @@ $(function () {
 			}, 1000);
 			return;
 		}
-		$.get('/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2', function (data) {
+		$.get('/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2', function (data, txtStat, req) {
+			var dateObj = new Date(req.getResponseHeader('Date'));
+			var svrMonth = dateObj.getMonth() + 1;
+			var svrDay = dateObj.getDate() - 1;
+			var svrYear = dateObj.getFullYear();
 			var special = $(data).find(".special");
 			rcText = $(data).find("#firstHeading").text();
 			if ( !/\S/.test(rcText) ) {
@@ -183,12 +215,25 @@ $(function () {
 				localStorage['mw-recentchanges-sidebar'] += info;
 				$("#rcSidebar").append(info);
 			});
-			setTimeout(function() {
-				refresh();
-			}, refreshRate * 1000);
+			$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
+				$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
+				$("#pgViewSidebar").css(pgViewSidebarSTyle);
+				setTimeout(function() { refresh(); }, refreshRate * 1000);
+			}).fail(function(){
+				svrDay--;
+				$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
+					$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
+					$("#pgViewSidebar").css(pgViewSidebarSTyle);
+					setTimeout(function() { refresh(); }, refreshRate * 1000);
+				}).fail(function() {
+					// Failed to get pageviews
+					setTimeout(function() { refresh(); }, refreshRate * 1000);
+				});
+			});
 		});
 	}
 	refresh();
+
 	if ( isVector ) {
 		preMarginRight = $("#mw-content-text").css("margin-right");
 		preMinHeight = $("#mw-content-text").css("minHeight");
