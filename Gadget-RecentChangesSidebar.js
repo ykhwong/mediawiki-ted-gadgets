@@ -305,7 +305,7 @@ $(function () {
 			.text( getMsg('sidebar_title') ) // Recent changes sidebar
 			.click( toggleState );
 		if ( $( '#ca-nstab-special' ).length > 0 ) {
-			$( '#ca-nstab-special' ).append( $toggle );
+			$( '#ca-nstab-special' ).parent().append( $toggle );
 		} else {
 			$( '#p-views ul' ).append( $toggle );
 		}
