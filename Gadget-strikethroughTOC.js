@@ -1,6 +1,7 @@
 $(function () {
 	var arr_ids = [];
-	var toc;
+	var tocname;
+	var levelname;
 	var fileUrl = "";
 	var filename = "";
 	const waitImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Pictogram_voting_wait_green.svg/14px-Pictogram_voting_wait_green.svg.png';
@@ -12,8 +13,13 @@ $(function () {
 	];
 
 	function addImg(nTxt, fileUrl, lvl) {
+		var imgTag = "<img style='padding-right: 4px;' width='14' height='14' src=" + fileUrl + ">";
 		$(nTxt).prepend("<img width='14' height='14' src=" + fileUrl + ">");
-		$($($( '#toc li.toclevel-1' )[lvl]).find("a")[0]).prepend("<img style='padding-right: 4px;' width='14' height='14' src=" + fileUrl + ">");
+		if ( tocname === '#toc' ) {
+			$($($( levelname )[lvl]).find("a")[0]).prepend(imgTag);
+		} else {
+			$($($( levelname )[lvl]).find("a")[0]).find('.sidebar-toc-text').prepend(imgTag);
+		}
 	}
 
 	if (
@@ -25,21 +31,35 @@ $(function () {
 		return;
 	}
 
-	toc = document.getElementById("toc");
-	if ( ! ( toc && toc.getElementsByTagName("ul")[0] ) ) {
+	if ( $('#mw-panel-toc ul').length > 0 ) {
+		tocname = '#mw-panel-toc';
+		levelname = tocname + ' li.sidebar-toc-level-1';
+	} else if ( $('#toc ul').length > 0 ) {
+		tocname = '#toc';
+		levelname = tocname + ' li.toclevel-1';
+	} else {
 		return;
 	}
 
-	$( '#toc li.toclevel-1' ).each( function ( i, li ) {
+	$( levelname ).each( function ( i, li ) {
 		var cnt = 0;
 		var checked = false;
-		var hrefNode;
 		var sibl;
-		var txt = '#' + $.escapeSelector($( li )
+		var txt;
+		var nTxt;
+
+		if ( tocname === '#toc' ) {
+			txt = '#' + $.escapeSelector($( li )
 			.find( 'span.toctext' ).text()
 			.replace(/‎+/g, "")
 			.replace(/\s+/g, "_"));
-		var nTxt;
+		} else {
+			var itemNo = $( li ).find( '.sidebar-toc-text .sidebar-toc-numb' ).text();
+			var itemTxt = $( li ).find( '.sidebar-toc-text' ).text().replace(itemNo, "");
+			txt = '#' + $.escapeSelector(itemTxt
+				.replace(/‎+/g, "").trim()
+				.replace(/\s+/g, "_"));
+		}
 
 		arr_ids.forEach(function (item) {
 			if ( item === txt ) {
@@ -53,7 +73,7 @@ $(function () {
 			txt = txt + "_" + cnt;
 		}
 
-		nTxt = txt.replace(/^#/, "#toc-") + " .sidebar-toc-text";
+		nTxt = txt.replace(/^#/, tocname + "-") + " .sidebar-toc-text";
 		sibl = $(txt).parent().next();
 		if ( sibl.html() === undefined ) {
 			return;
