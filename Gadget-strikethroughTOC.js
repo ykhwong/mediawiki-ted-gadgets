@@ -79,7 +79,7 @@ $(function () {
 			return;
 		}
 
-		while ( sibl.html() && sibl[0].nodeName.toLowerCase() !== "h2" ) {
+		while ( sibl.html() && !/^(h2|h3)$/i.test(sibl[0].nodeName) ) {
 			var imgTag = sibl.find('img');
 			var pp = sibl.clone().find('noscript').contents().unwrap();
 			if ( pp.length > 0 ) {
