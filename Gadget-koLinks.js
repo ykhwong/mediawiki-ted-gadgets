@@ -134,7 +134,7 @@ $(function() {
 	}
 
 	function addBox() {
-		if (!/^(0|10|14)$/.test(mw.config.get("wgNamespaceNumber"))) {
+		if (!/^(0|2|10|14)$/.test(mw.config.get("wgNamespaceNumber"))) {
 			return;
 		}
 
