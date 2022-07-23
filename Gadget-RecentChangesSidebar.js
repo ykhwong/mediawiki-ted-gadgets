@@ -218,12 +218,18 @@ $(function () {
 			$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
 				$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
 				$("#pgViewSidebar").css(pgViewSidebarSTyle);
+				if ( ! isVector ) {
+					$("#pgViewSidebar li").css("margin-left", "20px");
+				}
 				setTimeout(function() { refresh(); }, refreshRate * 1000);
 			}).fail(function(){
 				svrDay--;
 				$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
 					$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
 					$("#pgViewSidebar").css(pgViewSidebarSTyle);
+					if ( ! isVector ) {
+						$("#pgViewSidebar li").css("margin-left", "20px");
+					}
 					setTimeout(function() { refresh(); }, refreshRate * 1000);
 				}).fail(function() {
 					// Failed to get pageviews
