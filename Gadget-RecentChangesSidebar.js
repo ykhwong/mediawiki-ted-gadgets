@@ -303,11 +303,12 @@ $(function () {
 			showSidebar();
 		}
 
-		$toggle = $( '<li><span><a></a></span></li>' )
+		$toggle = $( '<li><a><span></span></a></li>' )
 			.attr( 'id', 'ca-recentchanges' )
-			.attr( 'class', 'icon' );
+			.attr( 'class', 'mw-list-item' );
 		$toggle.find( 'a' )
-			.attr( 'title', getMsg('sidebar_desc') ) // Toggle recent changes sidebar
+			.attr( 'title', getMsg('sidebar_desc') ); // Toggle recent changes sidebar
+		$toggle.find( 'span' )
 			.text( getMsg('sidebar_title') ) // Recent changes sidebar
 			.click( toggleState );
 		if ( $( '#ca-nstab-special' ).length > 0 ) {
