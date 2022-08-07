@@ -66,8 +66,6 @@ $(function () {
 		"font-size": "smaller",
 		"margin-top": "5px"
 	};
-	
-	if ($(".diff").length > 0) return;
 
 	if ( ! isVector ) {
 		$(".footer-content").append('<div id="rcSidebar"></div>');
@@ -127,7 +125,7 @@ $(function () {
 	}
 
 	function repos() {
-		if ($(".mw-workspace-container").outerWidth() < 1440 || $("#ca-nstab-category").length > 0) {
+		if (($(".mw-page-container-inner").width() - $(".mw-workspace-container.vector-sidebar-container").width() - $(".mw-content-container").width()) < sidebarWidth + 50) {
 			$("#rcSidebar").css("margin-right", "0px");
 			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
 			$("#mw-content-text").css("minHeight", minHeight + "px");
@@ -244,7 +242,7 @@ $(function () {
 		preMarginRight = $("#mw-content-text").css("margin-right");
 		preMinHeight = $("#mw-content-text").css("minHeight");
 		$(window).resize(function() {
-			if ( !isLegacyVector && mw.config.get("wgNamespaceNumber") !== -1 && mw.config.get("wgAction") !== "history" ) {
+			if (!isLegacyVector) {
 				if ( !options.autoresize || ( options.autoresize && $("#rcSidebar").isInViewport() )) {
 					if (localStorage['mw-recentchanges-sidebar-state'] !== 'hidden') {
 						repos();
@@ -266,7 +264,7 @@ $(function () {
 			} else {
 				$("#mw-content-text").css("margin-right", preMarginRight);
 				$("#mw-content-text").css("minHeight", preMinHeight);
-				if ( !isLegacyVector && mw.config.get("wgNamespaceNumber") !== -1 && mw.config.get("wgAction") !== "history" ) {
+				if (!isLegacyVector) {
 					repos();
 				}
 			}
