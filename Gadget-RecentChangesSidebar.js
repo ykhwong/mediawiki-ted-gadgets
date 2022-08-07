@@ -28,6 +28,7 @@ $(function () {
 	var rcText = "";
 	var rcSidebarStyle = {
 		"position": "absolute",
+		"background-color": "white",
 		"color": "black",
 		"width": sidebarWidth + "px",
 		"top": "0px",
