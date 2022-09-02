@@ -13,7 +13,7 @@ $(function () {
 	];
 
 	function addImg(nTxt, fileUrl, lvl) {
-		var imgTag = "<img style='padding-right: 8px; padding-top: 3px; float: left;' width='14' height='14' src=" + fileUrl + ">";
+		var imgTag = "<img style='margin-left: -23px; padding-right: 8px; padding-top: 3px; float: left;' width='14' height='14' src=" + fileUrl + ">";
 		$(nTxt).prepend("<img width='14' height='14' src=" + fileUrl + ">");
 		if ( tocname === '#toc' ) {
 			$($($( levelname )[lvl]).find("a")[0]).prepend(imgTag);
