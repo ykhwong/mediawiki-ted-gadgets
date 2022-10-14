@@ -304,7 +304,7 @@ $(function () {
 
 		$toggle = $( '<li><a><span></span></a></li>' )
 			.attr( 'id', 'ca-recentchanges' )
-			.attr( 'class', 'mw-list-item' );
+			.attr( 'class', 'vector-tab-noicon mw-list-item' );
 		$toggle.find( 'a' )
 			.attr( 'title', getMsg('sidebar_desc') ); // Toggle recent changes sidebar
 		$toggle.find( 'span' )
