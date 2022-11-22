@@ -126,7 +126,7 @@ $(function () {
 	}
 
 	function repos() {
-		if (($(".mw-page-container-inner").width() - $(".mw-workspace-container.vector-sidebar-container").width() - $(".mw-content-container").width()) < sidebarWidth + 50) {
+		if ($(".vector-feature-limited-width-enabled").length === 0 || $("body").width() < 2080) {
 			$("#rcSidebar").css("margin-right", "0px");
 			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
 			$("#mw-content-text").css("minHeight", minHeight + "px");
@@ -269,6 +269,9 @@ $(function () {
 					repos();
 				}
 			}
+		});
+		$(".vector-limited-width-toggle").click(function() {
+			repos();
 		});
 	}
 
