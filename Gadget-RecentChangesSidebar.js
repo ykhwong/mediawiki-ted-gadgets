@@ -270,8 +270,8 @@ $(function () {
 				}
 			}
 		});
-		$(".vector-limited-width-toggle").click(function() {
-			repos();
+		$(document).on('click', '.vector-limited-width-toggle', function () {
+			window.dispatchEvent(new Event('resize'));
 		});
 	}
 
