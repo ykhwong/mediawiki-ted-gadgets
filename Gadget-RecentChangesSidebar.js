@@ -22,6 +22,14 @@ $(function () {
 		"sidebar_desc" : {
 			"en" : "Toggle recent changes sidebar",
 			"ko" : "최근 바뀜 사이드바를 토글합니다"
+		},
+		"more" : {
+			"en" : "More",
+			"ko" : "더 보기"
+		},
+		"top_view" : {
+			"en" : "Top-view",
+			"ko" : "많이 본 문서"
 		}
 	};
 
@@ -34,7 +42,8 @@ $(function () {
 		"top": "0px",
 		"right": "0px",
 		"padding": "3px",
-		"border": "solid 1px #c8ccd1"
+		"border": "solid 1px #c8ccd1",
+		"border-radius": "5px 5px 0 0"
 	};
 	var rcSidebarMobileStyle = {
 		"position": "relative",
@@ -46,15 +55,17 @@ $(function () {
 	};
 	var rcSidebarTabStyle = {
 		"position": "relative",
-		"backgroundColor": "#eaecf0",
+		"background-color": "white",
 		"width": (sidebarWidth - 4) + "px",
 		"padding": "5px",
 		"margin": "-4px 0px 0px -4px",
-		"border": "solid 1px #c8ccd1"
+		"border": "solid 1px #c8ccd1",
+		"border-bottom": "solid 2px #3F89F1",
+		"border-radius": "5px 5px 0 0"
 	};
 	var rcSidebarTabMobileStyle = {
 		"position": "relative",
-		"backgroundColor": "#eaecf0",
+		"background-color": "white",
 		"padding-top": "5px",
 		"padding-bottom": "5px",
 		"margin": "0px",
@@ -62,7 +73,7 @@ $(function () {
 		"overflow-x": "hidden !important"
 	};
 	var pgViewSidebarSTyle = {
-		"border": "1px solid grey",
+		"border-top": "2px solid #3F89F1",
 		"padding": "4px",
 		"font-size": "smaller",
 		"margin-top": "5px"
@@ -122,7 +133,7 @@ $(function () {
 	}
 
 	function addRcText() {
-		$("#rcSidebar").html('<div class="rcSidebarTab" style="font-weight: bold;"><a href="/wiki/Special:RecentChanges">' + rcText + '</a></div>');
+		$("#rcSidebar").html('<div class="rcSidebarTab" style="font-weight: bold;">' + rcText + '<span style="background-color: #3F89F1; border-radius: 5px; padding: 3px 5px 3px; float: right; margin-top: -2px;"><a style="font-weight: normal; color: white; text-decoration: none; font-size: 85%;" href="/wiki/Special:RecentChanges">' + getMsg('more') + '</a></span></div>');
 	}
 
 	function repos() {
@@ -161,7 +172,7 @@ $(function () {
 	function getPageViews(info, date) {
 		var retData;
 		var cnt = 0;
-		retData = '<div id="pgViewSidebar"><div style="font-weight: bold;">탑뷰: ' + date.year + '년 ' + date.month + '월 ' + date.day + '일</div>';
+		retData = '<div id="pgViewSidebar"><div style="font-weight: bold;">' + getMsg('top_view') + ' (' + date.year + '-' + date.month + '-' + date.day + ')</div>';
 		retData += '<ol>';
 		$.each( info.items[0].articles, function( i, item ) {
 			if (/^(틀|위키백과|특수|도움말):/.test(item.article)) {
@@ -209,7 +220,7 @@ $(function () {
 					'<div title="' + targetPage + '" style="display:inline-block; width: ' +
 					(sidebarWidth - 40) + 'px; white-space: nowrap; overflow: hidden; vertical-align: text-top;">' +
 					'<a href="/wiki/' + encodeURIComponent(targetPage) + '">' + targetPage + '</a></div>' +
-					'<div style="display:inline-block; white-space: nowrap; padding-left: 5px; color:green; font-size:smaller; vertical-align: text-top;">' +
+					'<div style="display:inline-block; white-space: nowrap; padding-left: 5px; color:black; font-size:smaller; vertical-align: text-top;">' +
 					changedDate + "</div>" + '<br />';
 				localStorage['mw-recentchanges-sidebar'] += info;
 				$("#rcSidebar").append(info);
