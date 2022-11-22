@@ -87,7 +87,7 @@ $(function () {
 		$("#rcSidebar").css(rcSidebarStyle);
 
 		if ( isLegacyVector ) {
-			if (mw.config.get("wgCoordinates") !== null || $("#coordinates").length > 0) {
+			if ($(".mw-indicators").children().length > 0) {
 				$("#rcSidebar").css("top", "43px");
 			}
 		}
@@ -141,14 +141,14 @@ $(function () {
 			$("#rcSidebar").css("margin-right", "0px");
 			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
 			$("#mw-content-text").css("minHeight", minHeight + "px");
-			if (mw.config.get("wgCoordinates") !== null || $("#coordinates").length > 0) {
+			if ($(".mw-indicators").children().length > 0) {
 				$("#rcSidebar").css("top", "43px");
 			}
 		} else {
 			$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 90) + "px");
 			$("#mw-content-text").css("margin-right", "0px");
 			$("#mw-content-text").css("minHeight", "0px");
-			if (mw.config.get("wgCoordinates") !== null || $("#coordinates").length > 0) {
+			if ($(".mw-indicators").children().length > 0) {
 				$("#rcSidebar").css("top", "0px");
 			}
 		}
