@@ -85,7 +85,12 @@ $(function () {
 	} else {
 		$("#mw-content-text").append('<div id="rcSidebar"></div>');
 		$("#rcSidebar").css(rcSidebarStyle);
+	}
 
+	function procVector() {
+		if ( !isVector ) {
+			return false;
+		}
 		if ( isLegacyVector ) {
 			if ($(".mw-indicators").children().length > 0) {
 				$("#rcSidebar").css("top", "43px");
@@ -99,10 +104,27 @@ $(function () {
 				$("#rcSidebar").css("top", "30px");
 			}
 			$("#mw-content-text").css("minHeight", minHeight + "px");
+		}
+
+		if ($(".vector-feature-limited-width-enabled").length === 0 || $(".mw-page-container").width() * 100 / $("body").width() > ( mw.config.get("wgNamespaceNumber") === -1 ? 75 : 90 ) ) {
+			if (mw.config.get("wgCanonicalSpecialPageName") !== "Search") {
+				$("#rcSidebar").css("margin-right", "0px");
+			}
+			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
+			$("#mw-content-text").css("minHeight", minHeight + "px");
+			if ($(".mw-indicators").children().length > 0) {
+				$("#rcSidebar").css("top", "43px");
+			}
 		} else {
-			repos();
+			$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 90) + "px");
+			$("#mw-content-text").css("margin-right", "0px");
+			$("#mw-content-text").css("minHeight", "0px");
+			if ($(".mw-indicators").children().length > 0) {
+				$("#rcSidebar").css("top", "0px");
+			}
 		}
 	}
+	procVector();
 
 	if ( localStorage['mw-recentchanges-sidebar']  !== undefined ) {
 		if (localStorage['mw-recentchanges-sidebar-tab1'] !== undefined) {
@@ -137,21 +159,8 @@ $(function () {
 	}
 
 	function repos() {
-		if ($(".vector-feature-limited-width-enabled").length === 0 || $("body").width() < 2080) {
-			$("#rcSidebar").css("margin-right", "0px");
-			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
-			$("#mw-content-text").css("minHeight", minHeight + "px");
-			if ($(".mw-indicators").children().length > 0) {
-				$("#rcSidebar").css("top", "43px");
-			}
-		} else {
-			$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 90) + "px");
-			$("#mw-content-text").css("margin-right", "0px");
-			$("#mw-content-text").css("minHeight", "0px");
-			if ($(".mw-indicators").children().length > 0) {
-				$("#rcSidebar").css("top", "0px");
-			}
-		}
+		// TO-DO: Find the best portion to place the recent changes sidebar
+		procVector();
 	}
 
 	$.fn.isInViewport = function() {
@@ -217,8 +226,8 @@ $(function () {
 				var targetPage = elem.find(".mw-changeslist-line-inner").data("target-page");
 				var changedDate = elem.find(".mw-changeslist-date").text();
 				var info = 
-					'<div title="' + targetPage + '" style="display:inline-block; width: ' +
-					(sidebarWidth - 40) + 'px; white-space: nowrap; overflow: hidden; vertical-align: text-top;">' +
+					'<div title="' + targetPage + '" style="display: inline-block; width: ' +
+					(sidebarWidth - 40) + 'px; white-space: nowrap; overflow: hidden; margin-left: 2px; vertical-align: text-top;">' +
 					'<a href="/wiki/' + encodeURIComponent(targetPage) + '">' + targetPage + '</a></div>' +
 					'<div style="display:inline-block; white-space: nowrap; padding-left: 5px; color:black; font-size:smaller; vertical-align: text-top;">' +
 					changedDate + "</div>" + '<br />';
