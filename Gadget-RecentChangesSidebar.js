@@ -104,9 +104,7 @@ $(function () {
 				$("#rcSidebar").css("top", "30px");
 			}
 			$("#mw-content-text").css("minHeight", minHeight + "px");
-		}
-
-		if ($(".vector-feature-limited-width-enabled").length === 0 || $(".mw-page-container").width() * 100 / $("body").width() > ( mw.config.get("wgNamespaceNumber") === -1 ? 75 : 90 ) ) {
+		} else if ($(".vector-feature-limited-width-enabled").length === 0 || $(".mw-page-container").width() * 100 / $("body").width() > ( mw.config.get("wgNamespaceNumber") === -1 ? 75 : 90 ) ) {
 			if (mw.config.get("wgCanonicalSpecialPageName") !== "Search") {
 				$("#rcSidebar").css("margin-right", "0px");
 			}
