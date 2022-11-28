@@ -136,7 +136,7 @@ $(function () {
 		} else {
 			var greyWidth = ( $("body").width() - ( $(".mw-page-container").width() + parseFloat($(".mw-page-container").css("padding-right")) + parseFloat($(".mw-page-container").css("padding-left")) ) ) / 2;
 			var ns = mw.config.get( 'wgNamespaceNumber' );
-			if ( ns === 14 || ns === -1 || mw.config.get("wgAction") === "history" ) {
+			if ( ns === 14 || ns === -1 || mw.config.get("wgAction") === "history" || mw.config.get("wgAction") === "edit" ) {
 				if (greyWidth - 30 < sidebarWidth) {
 					if (mw.config.get("wgCanonicalSpecialPageName") === "Search") {
 						$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 30) + "px");
