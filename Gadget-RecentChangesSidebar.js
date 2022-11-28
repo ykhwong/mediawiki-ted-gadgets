@@ -136,7 +136,7 @@ $(function () {
 		} else {
 			var greyWidth = ( $("body").width() - ( $(".mw-page-container").width() + parseFloat($(".mw-page-container").css("padding-right")) + parseFloat($(".mw-page-container").css("padding-left")) ) ) / 2;
 			var ns = mw.config.get( 'wgNamespaceNumber' );
-			if ( ns === 14 || ns === -1 ) {
+			if ( ns === 14 || ns === -1 || mw.config.get("wgAction") === "history" ) {
 				if (greyWidth - 30 < sidebarWidth) {
 					if (mw.config.get("wgCanonicalSpecialPageName") !== "Search") {
 						$("#rcSidebar").css("margin-right", "0px");
@@ -337,62 +337,62 @@ $(function () {
 
 		refresh();
 
-		if ( isVector ) {
-			preMarginRight = $("#mw-content-text").css("margin-right");
-			preMinHeight = $("#mw-content-text").css("minHeight");
-			$(window).resize(function() {
-				if (!isLegacyVector) {
-					if ( !options.autoresize || ( options.autoresize && $("#rcSidebar").isInViewport() )) {
-						if (localStorage['mw-recentchanges-sidebar-state'] !== 'hidden') {
-							procVector();
-						}
-					}
-				}
-				if ( $("#rcSidebar").isInViewport() ) {
-					preMarginRight = $("#mw-content-text").css("margin-right");
-					preMinHeight = $("#mw-content-text").css("minHeight");
-				}
-			});
-			$(window).scroll(function() {
-				if (!options.autoresize) {
-					return;
-				}
-				if ( !$("#rcSidebar").isInViewport() ) {
-					$("#mw-content-text").css("margin-right", "0px");
-					$("#mw-content-text").css("minHeight", "0px");
-				} else {
-					$("#mw-content-text").css("margin-right", preMarginRight);
-					$("#mw-content-text").css("minHeight", preMinHeight);
-					if (!isLegacyVector) {
+		if ( ! isVector ) {
+			return;
+		}
+
+		preMarginRight = $("#mw-content-text").css("margin-right");
+		preMinHeight = $("#mw-content-text").css("minHeight");
+		$(window).resize(function() {
+			if (!isLegacyVector) {
+				if ( !options.autoresize || ( options.autoresize && $("#rcSidebar").isInViewport() )) {
+					if (localStorage['mw-recentchanges-sidebar-state'] !== 'hidden') {
 						procVector();
 					}
 				}
-			});
-			$(document).on('click', '.vector-limited-width-toggle', function () {
-				$(window).trigger("resize");
-			});
+			}
+			if ( $("#rcSidebar").isInViewport() ) {
+				preMarginRight = $("#mw-content-text").css("margin-right");
+				preMinHeight = $("#mw-content-text").css("minHeight");
+			}
+		});
+		$(window).scroll(function() {
+			if (!options.autoresize) {
+				return;
+			}
+			if ( !$("#rcSidebar").isInViewport() ) {
+				$("#mw-content-text").css("margin-right", "0px");
+				$("#mw-content-text").css("minHeight", "0px");
+			} else {
+				$("#mw-content-text").css("margin-right", preMarginRight);
+				$("#mw-content-text").css("minHeight", preMinHeight);
+				if (!isLegacyVector) {
+					procVector();
+				}
+			}
+		});
+		$(document).on('click', '.vector-limited-width-toggle', function () {
+			$(window).trigger("resize");
+		});
+
+		if (localStorage['mw-recentchanges-sidebar-state'] == 'hidden') {
+			hideSidebar();
+		} else {
+			showSidebar();
 		}
 
-		if (isVector) {
-			if (localStorage['mw-recentchanges-sidebar-state'] == 'hidden') {
-				hideSidebar();
-			} else {
-				showSidebar();
-			}
-
-			$toggle = $( '<li><a><span></span></a></li>' )
-				.attr( 'id', 'ca-recentchanges' )
-				.attr( 'class', 'vector-tab-noicon mw-list-item' );
-			$toggle.find( 'a' )
-				.attr( 'title', getMsg('sidebar_desc') ); // Toggle recent changes sidebar
-			$toggle.find( 'span' )
-				.text( getMsg('sidebar_title') ) // Recent changes sidebar
-				.click( toggleState );
-			if ( $( '#ca-nstab-special' ).length > 0 ) {
-				$( '#ca-nstab-special' ).parent().append( $toggle );
-			} else {
-				$( '#p-views ul' ).append( $toggle );
-			}
+		$toggle = $( '<li><a><span></span></a></li>' )
+			.attr( 'id', 'ca-recentchanges' )
+			.attr( 'class', 'vector-tab-noicon mw-list-item' );
+		$toggle.find( 'a' )
+			.attr( 'title', getMsg('sidebar_desc') ); // Toggle recent changes sidebar
+		$toggle.find( 'span' )
+			.text( getMsg('sidebar_title') ) // Recent changes sidebar
+			.click( toggleState );
+		if ( $( '#ca-nstab-special' ).length > 0 ) {
+			$( '#ca-nstab-special' ).parent().append( $toggle );
+		} else {
+			$( '#p-views ul' ).append( $toggle );
 		}
 	}
 	
