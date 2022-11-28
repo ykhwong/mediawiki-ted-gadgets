@@ -138,8 +138,10 @@ $(function () {
 			var ns = mw.config.get( 'wgNamespaceNumber' );
 			if ( ns === 14 || ns === -1 || mw.config.get("wgAction") === "history" ) {
 				if (greyWidth - 30 < sidebarWidth) {
-					if (mw.config.get("wgCanonicalSpecialPageName") !== "Search") {
-						$("#rcSidebar").css("margin-right", "0px");
+					if (mw.config.get("wgCanonicalSpecialPageName") === "Search") {
+						$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 30) + "px");
+					} else {
+						$("#rcSidebar").css("margin-right", 0);
 					}
 					$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
 					$("#mw-content-text").css("minHeight", minHeight + "px");
@@ -155,9 +157,11 @@ $(function () {
 					}
 				}
 			} else {
-				if ($(".vector-feature-limited-width-enabled").length === 0 || $(".mw-page-container").width() * 100 / $("body").width() > ( mw.config.get("wgNamespaceNumber") === -1 ? 75 : 90 ) ) {
-					if (mw.config.get("wgCanonicalSpecialPageName") !== "Search") {
-						$("#rcSidebar").css("margin-right", "0px");
+				if ($(".vector-feature-limited-width-enabled").length === 0 || $(".mw-page-container").width() * 100 / $("body").width() > 90 ) {
+					if (mw.config.get("wgCanonicalSpecialPageName") === "Search") {
+						$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 30) + "px");
+					} else {
+						$("#rcSidebar").css("margin-right", 0);
 					}
 					$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
 					$("#mw-content-text").css("minHeight", minHeight + "px");
@@ -165,7 +169,7 @@ $(function () {
 						$("#rcSidebar").css("top", "43px");
 					}
 				} else {
-					$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 90) + "px");
+					$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 30) + "px");
 					$("#mw-content-text").css("margin-right", "0px");
 					$("#mw-content-text").css("minHeight", "0px");
 					if ($(".mw-indicators").children().length > 0) {
