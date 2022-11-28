@@ -7,6 +7,7 @@ $(function () {
 	const minHeight = 400;
 	const refreshRate = 10;
 	const isVector = /vector/.test( mw.config.get("skin") );
+	const isMinerva = /minerva/.test( mw.config.get("skin") );
 	const isLegacyVector = ( $(".skin-vector-legacy").length > 0 );
 	const pageViewsURI = '//wikimedia.org/api/rest_v1/metrics/pageviews/top/ko.wikipedia.org/all-access';
 	var preMarginRight = $("#mw-content-text").css("margin-right");
@@ -15,88 +16,116 @@ $(function () {
 		autoresize : false
 	};
 	var msgGrp = {
-		"sidebar_title" : {
-			"en" : "Recent changes sidebar",
-			"ko" : "최근 바뀜 사이드바"
+		'sidebar_title' : {
+			'en' : 'Recent changes sidebar',
+			'ko' : '최근 바뀜 사이드바'
 		},
-		"sidebar_desc" : {
-			"en" : "Toggle recent changes sidebar",
-			"ko" : "최근 바뀜 사이드바를 토글합니다"
+		'sidebar_desc' : {
+			'en' : 'Toggle recent changes sidebar',
+			'ko' : '최근 바뀜 사이드바를 토글합니다'
 		},
-		"more" : {
-			"en" : "More",
-			"ko" : "더 보기"
+		'more' : {
+			'en' : 'More',
+			'ko' : '더 보기'
 		},
-		"top_view" : {
-			"en" : "Top-view",
-			"ko" : "많이 본 문서"
+		'top_view' : {
+			'en' : 'Top-view',
+			'ko' : '많이 본 문서'
+		},
+		'namespace_prefixes' : {
+			'en' : [
+				'Talk', 'User', 'User talk', 'Wikipedia', 'Wikipedia talk', 'File', 'File talk', 'MediaWiki', 'MediaWiki talk', 'Template', 'Template talk', 'Help', 'Help talk', 'Category', 'Category talk',
+				'Portal', 'Portal talk', 'Draft', 'Draft talk', 'TimedText', 'TimedText talk', 'Module', 'Module talk', 'Special', 'Media'
+			],
+			'ko' : [
+				'토론', '사용자', '사용자토론', '위키백과', '위키백과토론', '파일', '파일토론', '미디어위키', '미디어위키토론', '틀', '틀토론', '도움말', '도움말토론', '분류', '분류토론',
+				'포털', '포털토론', '위키프로젝트', '위키프로젝트토론', '초안', '초안토론', 'TimedText', 'TimedText Talk', '모듈', '모듈토론', '특수', '미디어'
+			]
 		}
 	};
 
 	var rcText = "";
 	var rcSidebarStyle = {
-		"position": "absolute",
-		"background-color": "white",
-		"color": "black",
-		"width": sidebarWidth + "px",
-		"top": "0px",
-		"right": "0px",
-		"padding": "3px",
-		"border": "solid 1px #c8ccd1",
-		"border-radius": "5px 5px 0 0"
+		'position': 'absolute',
+		'background-color': 'white',
+		'color': 'black',
+		'width': sidebarWidth + 'px',
+		'top': '0px',
+		'right': '0px',
+		'padding': '3px',
+		'border': 'solid 1px #c8ccd1',
+		'border-radius': '5px 5px 0 0'
 	};
 	var rcSidebarMobileStyle = {
-		"position": "relative",
-		"color": "black",
-		"top": "0px",
-		"right": "0px",
-		"padding": "3px",
-		"overflow-x": "hidden !important"
+		'position': 'relative',
+		'color': 'black',
+		'top': '0px',
+		'right': '0px',
+		'padding': '3px',
+		'overflow-x': 'hidden !important'
 	};
 	var rcSidebarTabStyle = {
-		"position": "relative",
-		"background-color": "white",
-		"width": (sidebarWidth - 4) + "px",
-		"padding": "5px",
-		"margin": "-4px 0px 0px -4px",
-		"border": "solid 1px #c8ccd1",
-		"border-bottom": "solid 2px #3F89F1",
-		"border-radius": "5px 5px 0 0"
+		'position': 'relative',
+		'background-color': 'white',
+		'width': (sidebarWidth - 4) + 'px',
+		'padding': '5px',
+		'margin': '-4px 0px 0px -4px',
+		'border': 'solid 1px #c8ccd1',
+		'border-bottom': 'solid 2px #3F89F1',
+		'border-radius': '5px 5px 0 0'
 	};
 	var rcSidebarTabMobileStyle = {
-		"position": "relative",
-		"background-color": "white",
-		"padding-top": "5px",
-		"padding-bottom": "5px",
-		"margin": "0px",
-		"border-bottom": "solid 1px #c8ccd1",
-		"overflow-x": "hidden !important"
+		'position': 'relative',
+		'background-color': 'white',
+		'padding-top': '5px',
+		'padding-bottom': '5px',
+		'margin': '0px',
+		'border-bottom': 'solid 1px #c8ccd1',
+		'overflow-x': 'hidden !important'
 	};
 	var pgViewSidebarSTyle = {
-		"border-top": "2px solid #3F89F1",
-		"padding": "4px",
-		"font-size": "smaller",
-		"margin-top": "5px"
+		'border-top': '2px solid #3F89F1',
+		'padding': '4px',
+		'font-size': 'smaller',
+		'margin-top': '5px'
 	};
 
-	if ( ! isVector ) {
-		$(".footer-content").append('<div id="rcSidebar"></div>');
-		$("#rcSidebar").css(rcSidebarMobileStyle);
-	} else {
-		$("#mw-content-text").append('<div id="rcSidebar"></div>');
-		$("#rcSidebar").css(rcSidebarStyle);
+	$.fn.isInViewport = function() {
+		if ( $(this).length === 0 ) {
+			return false;
+		}
+		var elementTop = $(this).offset().top;
+		var elementBottom = elementTop + $(this).outerHeight();
+		var viewportTop = $(window).scrollTop();
+		var viewportBottom = viewportTop + $(window).height();
+
+		return elementBottom > viewportTop && elementTop < viewportBottom;
+	};
+
+	function init() {
+		var isInited = false;
+		if ( isMinerva ) {
+			$(".footer-content").append('<div id="rcSidebar"></div>');
+			$("#rcSidebar").css(rcSidebarMobileStyle);
+			isInited = true;
+		} else if ( isVector ) {
+			$("#mw-content-text").append('<div id="rcSidebar"></div>');
+			$("#rcSidebar").css(rcSidebarStyle);
+			isInited = true;
+		}
+		return isInited;
 	}
 
 	function procVector() {
 		if ( !isVector ) {
 			return false;
 		}
+
 		if ( isLegacyVector ) {
 			if ($(".mw-indicators").children().length > 0) {
 				$("#rcSidebar").css("top", "43px");
 			}
-		}
-		if ( isLegacyVector || mw.config.get("wgNamespaceNumber") === -1 || mw.config.get("wgAction") === "history" ) {
+
 			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
 			if (mw.config.get("wgCanonicalSpecialPageName") === "Search") {
 				$("#rcSidebar").css("margin-right", (-1 * sidebarWidth - 30) + "px");
@@ -104,35 +133,48 @@ $(function () {
 				$("#rcSidebar").css("top", "30px");
 			}
 			$("#mw-content-text").css("minHeight", minHeight + "px");
-		} else if ($(".vector-feature-limited-width-enabled").length === 0 || $(".mw-page-container").width() * 100 / $("body").width() > ( mw.config.get("wgNamespaceNumber") === -1 ? 75 : 90 ) ) {
-			if (mw.config.get("wgCanonicalSpecialPageName") !== "Search") {
-				$("#rcSidebar").css("margin-right", "0px");
-			}
-			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
-			$("#mw-content-text").css("minHeight", minHeight + "px");
-			if ($(".mw-indicators").children().length > 0) {
-				$("#rcSidebar").css("top", "43px");
-			}
 		} else {
-			$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 90) + "px");
-			$("#mw-content-text").css("margin-right", "0px");
-			$("#mw-content-text").css("minHeight", "0px");
-			if ($(".mw-indicators").children().length > 0) {
-				$("#rcSidebar").css("top", "0px");
+			var greyWidth = ( $("body").width() - ( $(".mw-page-container").width() + parseFloat($(".mw-page-container").css("padding-right")) + parseFloat($(".mw-page-container").css("padding-left")) ) ) / 2;
+			var ns = mw.config.get( 'wgNamespaceNumber' );
+			if ( ns === 14 || ns === -1 ) {
+				if (greyWidth - 30 < sidebarWidth) {
+					if (mw.config.get("wgCanonicalSpecialPageName") !== "Search") {
+						$("#rcSidebar").css("margin-right", "0px");
+					}
+					$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
+					$("#mw-content-text").css("minHeight", minHeight + "px");
+					if ($(".mw-indicators").children().length > 0) {
+						$("#rcSidebar").css("top", "43px");
+					}
+				} else {
+					$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 90) + "px");
+					$("#mw-content-text").css("margin-right", "0px");
+					$("#mw-content-text").css("minHeight", "0px");
+					if ($(".mw-indicators").children().length > 0) {
+						$("#rcSidebar").css("top", "0px");
+					}
+				}
+			} else {
+				if ($(".vector-feature-limited-width-enabled").length === 0 || $(".mw-page-container").width() * 100 / $("body").width() > ( mw.config.get("wgNamespaceNumber") === -1 ? 75 : 90 ) ) {
+					if (mw.config.get("wgCanonicalSpecialPageName") !== "Search") {
+						$("#rcSidebar").css("margin-right", "0px");
+					}
+					$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
+					$("#mw-content-text").css("minHeight", minHeight + "px");
+					if ($(".mw-indicators").children().length > 0) {
+						$("#rcSidebar").css("top", "43px");
+					}
+				} else {
+					$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 90) + "px");
+					$("#mw-content-text").css("margin-right", "0px");
+					$("#mw-content-text").css("minHeight", "0px");
+					if ($(".mw-indicators").children().length > 0) {
+						$("#rcSidebar").css("top", "0px");
+					}
+				}
 			}
 		}
 	}
-	procVector();
-
-	if ( localStorage['mw-recentchanges-sidebar']  !== undefined ) {
-		if (localStorage['mw-recentchanges-sidebar-tab1'] !== undefined) {
-			rcText = localStorage['mw-recentchanges-sidebar-tab1'];
-			addRcText();
-			$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
-		}
-	}
-	$(".rcSidebarTab").css( ! isVector ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
-	$(".mw-parser-output").css("word-wrap", "break-word");
 
 	function getMsg(msgCode) {
 		var langCode = mw.config.get( 'wgContentLanguage' );
@@ -153,27 +195,13 @@ $(function () {
 	}
 
 	function addRcText() {
-		$("#rcSidebar").html('<div class="rcSidebarTab" style="font-weight: bold;">' + rcText + '<span style="background-color: #3F89F1; border-radius: 5px; padding: 3px 5px 3px; float: right; margin-top: -2px;"><a style="font-weight: normal; color: white; text-decoration: none; font-size: 85%;" href="/wiki/Special:RecentChanges">' + getMsg('more') + '</a></span></div>');
-	}
-
-	function repos() {
-		// TO-DO: Find the best portion to place the recent changes sidebar
-		procVector();
-	}
-
-	$.fn.isInViewport = function() {
-		var elementTop = $(this).offset().top;
-		var elementBottom = elementTop + $(this).outerHeight();
-	
-		var viewportTop = $(window).scrollTop();
-		var viewportBottom = viewportTop + $(window).height();
-
-		return elementBottom > viewportTop && elementTop < viewportBottom;
-	};
-
-	$.fn.isOverflown = function(){
-		var e=this[0];
-		return e.scrollHeight>e.clientHeight||e.scrollWidth>e.clientWidth;
+		$("#rcSidebar").html(
+			'<div class="rcSidebarTab" style="font-weight: bold;">' + rcText +
+			'<span style="background-color: #3F89F1; border-radius: 5px; padding: 3px 5px 3px; float: right; margin-top: -2px;">' +
+			'<a style="font-weight: normal; color: white; text-decoration: none; font-size: 85%;" href="/wiki/Special:RecentChanges">' +
+			getMsg('more') +
+			'</a></span></div>'
+		);
 	}
 
 	function getPageViews(info, date) {
@@ -181,8 +209,16 @@ $(function () {
 		var cnt = 0;
 		retData = '<div id="pgViewSidebar"><div style="font-weight: bold;">' + getMsg('top_view') + ' (' + date.year + '-' + date.month + '-' + date.day + ')</div>';
 		retData += '<ol>';
+		var ignore = false;
 		$.each( info.items[0].articles, function( i, item ) {
-			if (/^(틀|위키백과|특수|도움말):/.test(item.article)) {
+			ignore = false;
+			for ( var i = 0; i < getMsg('namespace_prefixes').length; i++ ) {
+				if ( item.article.startsWith(getMsg('namespace_prefixes')[i] + ':') ) {
+					ignore = true;
+					break;
+				}
+			}
+			if (ignore) {
 				return true;
 			}
 			cnt++;
@@ -255,56 +291,23 @@ $(function () {
 			});
 		});
 	}
-	refresh();
-
-	if ( isVector ) {
-		preMarginRight = $("#mw-content-text").css("margin-right");
-		preMinHeight = $("#mw-content-text").css("minHeight");
-		$(window).resize(function() {
-			if (!isLegacyVector) {
-				if ( !options.autoresize || ( options.autoresize && $("#rcSidebar").isInViewport() )) {
-					if (localStorage['mw-recentchanges-sidebar-state'] !== 'hidden') {
-						repos();
-					}
-				}
-			}
-			if ( $("#rcSidebar").isInViewport() ) {
-				preMarginRight = $("#mw-content-text").css("margin-right");
-				preMinHeight = $("#mw-content-text").css("minHeight");
-			}
-		});
-		$(window).scroll(function() {
-			if (!options.autoresize) {
-				return;
-			}
-			if ( !$("#rcSidebar").isInViewport() ) {
-				$("#mw-content-text").css("margin-right", "0px");
-				$("#mw-content-text").css("minHeight", "0px");
-			} else {
-				$("#mw-content-text").css("margin-right", preMarginRight);
-				$("#mw-content-text").css("minHeight", preMinHeight);
-				if (!isLegacyVector) {
-					repos();
-				}
-			}
-		});
-		$(document).on('click', '.vector-limited-width-toggle', function () {
-			window.dispatchEvent(new Event('resize'));
-		});
-	}
 
 	function showSidebar() {
 		localStorage['mw-recentchanges-sidebar-state'] = 'show';
-		$("#mw-content-text").css("margin-right", preMarginRight);
-		$("#mw-content-text").css("minHeight", preMinHeight);
+		$("#mw-content-text").css({
+			"margin-right": preMarginRight,
+			"min-height": preMinHeight
+		});
 		$("#rcSidebar").show();
 		$(window).trigger("resize");
 	}
 
 	function hideSidebar() {
 		localStorage['mw-recentchanges-sidebar-state'] = 'hidden';
-		$("#mw-content-text").css("margin-right", "0px");
-		$("#mw-content-text").css("minHeight", "0px");
+		$("#mw-content-text").css({
+			"margin-right": 0,
+			"min-height": 0
+		});
 		$("#rcSidebar").hide();
 	}
 
@@ -316,25 +319,82 @@ $(function () {
 		}
 	}
 
-	if (isVector) {
-		if (localStorage['mw-recentchanges-sidebar-state'] == 'hidden') {
-			hideSidebar();
-		} else {
-			showSidebar();
+	function main() {
+		if ( !init() ) {
+			return;
 		}
 
-		$toggle = $( '<li><a><span></span></a></li>' )
-			.attr( 'id', 'ca-recentchanges' )
-			.attr( 'class', 'vector-tab-noicon mw-list-item' );
-		$toggle.find( 'a' )
-			.attr( 'title', getMsg('sidebar_desc') ); // Toggle recent changes sidebar
-		$toggle.find( 'span' )
-			.text( getMsg('sidebar_title') ) // Recent changes sidebar
-			.click( toggleState );
-		if ( $( '#ca-nstab-special' ).length > 0 ) {
-			$( '#ca-nstab-special' ).parent().append( $toggle );
-		} else {
-			$( '#p-views ul' ).append( $toggle );
+		procVector();
+		if ( localStorage['mw-recentchanges-sidebar']  !== undefined ) {
+			if (localStorage['mw-recentchanges-sidebar-tab1'] !== undefined) {
+				rcText = localStorage['mw-recentchanges-sidebar-tab1'];
+				addRcText();
+				$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
+			}
+		}
+		$(".rcSidebarTab").css( ! isVector ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
+		$(".mw-parser-output").css("word-wrap", "break-word");
+
+		refresh();
+
+		if ( isVector ) {
+			preMarginRight = $("#mw-content-text").css("margin-right");
+			preMinHeight = $("#mw-content-text").css("minHeight");
+			$(window).resize(function() {
+				if (!isLegacyVector) {
+					if ( !options.autoresize || ( options.autoresize && $("#rcSidebar").isInViewport() )) {
+						if (localStorage['mw-recentchanges-sidebar-state'] !== 'hidden') {
+							procVector();
+						}
+					}
+				}
+				if ( $("#rcSidebar").isInViewport() ) {
+					preMarginRight = $("#mw-content-text").css("margin-right");
+					preMinHeight = $("#mw-content-text").css("minHeight");
+				}
+			});
+			$(window).scroll(function() {
+				if (!options.autoresize) {
+					return;
+				}
+				if ( !$("#rcSidebar").isInViewport() ) {
+					$("#mw-content-text").css("margin-right", "0px");
+					$("#mw-content-text").css("minHeight", "0px");
+				} else {
+					$("#mw-content-text").css("margin-right", preMarginRight);
+					$("#mw-content-text").css("minHeight", preMinHeight);
+					if (!isLegacyVector) {
+						procVector();
+					}
+				}
+			});
+			$(document).on('click', '.vector-limited-width-toggle', function () {
+				$(window).trigger("resize");
+			});
+		}
+
+		if (isVector) {
+			if (localStorage['mw-recentchanges-sidebar-state'] == 'hidden') {
+				hideSidebar();
+			} else {
+				showSidebar();
+			}
+
+			$toggle = $( '<li><a><span></span></a></li>' )
+				.attr( 'id', 'ca-recentchanges' )
+				.attr( 'class', 'vector-tab-noicon mw-list-item' );
+			$toggle.find( 'a' )
+				.attr( 'title', getMsg('sidebar_desc') ); // Toggle recent changes sidebar
+			$toggle.find( 'span' )
+				.text( getMsg('sidebar_title') ) // Recent changes sidebar
+				.click( toggleState );
+			if ( $( '#ca-nstab-special' ).length > 0 ) {
+				$( '#ca-nstab-special' ).parent().append( $toggle );
+			} else {
+				$( '#p-views ul' ).append( $toggle );
+			}
 		}
 	}
+	
+	main();
 }());
