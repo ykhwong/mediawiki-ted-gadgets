@@ -428,6 +428,9 @@ $(function () {
 				addRcText();
 				$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
 				$("#rcSidebar").append('<div style="text-align: right; padding-right: 3px;"><label><input type="checkbox" id="rcSidebar-incWD">&nbsp;' + getMsg('inc_wd') + '</label></div>');
+				if ( localStorage['mw-recentchanges-sidebar-incWD'] === 'enabled' ) {
+					$("#rcSidebar-incWD").prop('checked', true);
+				}
 				$("#rcSidebar-incWD").attr("disabled", "disabled").off('click');
 			}
 		}
