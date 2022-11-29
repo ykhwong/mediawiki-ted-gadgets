@@ -363,6 +363,11 @@ $(function () {
 			});
 
 			// Add page views
+			if ( options.enabled !== undefined ) {
+				if ( ! options.top_view ) {
+					return;
+				}
+			}
 			if ( localStorage['mw-recentchanges-sidebar-pageviews-year']  !== undefined ) {
 				if ( localStorage['mw-recentchanges-sidebar-pageviews-month']  !== undefined ) {
 					if ( localStorage['mw-recentchanges-sidebar-pageviews-year']  !== undefined ) {
