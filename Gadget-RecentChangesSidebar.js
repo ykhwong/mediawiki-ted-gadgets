@@ -11,6 +11,9 @@ $(function () {
 	const isLegacyVector = ( $(".skin-vector-legacy").length > 0 );
 	const langCode = mw.config.get( 'wgContentLanguage' );
 	const pageViewsURI = '//wikimedia.org/api/rest_v1/metrics/pageviews/top/' + langCode + '.wikipedia.org/all-access';
+	const recentChangesURI = '/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2';
+	const recentChangesWithWdURI = '/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=0&limit=15&days=7&urlversion=2';
+	var timeoutIds = [];
 	var preMarginRight = $("#mw-content-text").css("margin-right");
 	var preMinHeight = $("#mw-content-text").css("minHeight");
 	var msgGrp = {
@@ -29,6 +32,10 @@ $(function () {
 		'top_view' : {
 			'en' : 'Top-view',
 			'ko' : '많이 본 문서'
+		},
+		'inc_wd' : {
+			'en' : 'Inc. WD',
+			'ko' : 'WD 포함'
 		},
 		'namespace_prefixes' : {
 			'en' : [
@@ -246,16 +253,30 @@ $(function () {
 		localStorage['mw-recentchanges-sidebar-pageviews-day'] = date.day;
 		return retData;
 	}
-	
+
+	function clearAllTimeout() {
+		for (var i = 0; i < timeoutIds.length; i++) {
+			clearTimeout(i);
+		}
+		timeoutIds = [];
+	}
+
 	function autoRefresh() {
+		var rcURI;
 		if (!$("#rcSidebar").isInViewport() || document.hidden || document.msHidden || document.webkitHidden || document.mozHidden ||
 		localStorage['mw-recentchanges-sidebar-state'] === 'hidden') {
-			setTimeout(function() {
-				autoRefresh();
-			}, 1000);
+			timeoutIds.push(setTimeout(function() { autoRefresh(); }, 1000));
 			return;
 		}
-		$.get('/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2', function (data, txtStat, req) {
+		clearAllTimeout();
+
+		if ( localStorage['mw-recentchanges-sidebar-incWD'] === 'enabled' ) {
+			rcURI = recentChangesWithWdURI;
+		} else {
+			rcURI = recentChangesURI;
+		}
+
+		$.get(rcURI, function (data, txtStat, req) {
 			var dateObj = new Date(req.getResponseHeader('Date'));
 			var svrMonth = dateObj.getMonth() + 1;
 			var svrDay = dateObj.getDate() - 1;
@@ -274,12 +295,18 @@ $(function () {
 			localStorage['mw-recentchanges-sidebar'] = "";
 			special.children().each(function() {
 				var elem = $(this);
-				var targetPage = elem.find(".mw-changeslist-line-inner").data("target-page");
+				var targetPage = $(elem.find(".mw-title")[0]).text();
 				var changedDate = elem.find(".mw-changeslist-date").text();
-				var diffLink = $(elem.find(".mw-changeslist-links > span > a:first")[0]).attr('href');
+				var diffLink = $(elem.find(".mw-changeslist-links > span > a:first")[0]).attr('href') || $(elem.find(".extiw")[0]).attr('href');
 				var info;
 				if ( ! /&diff=/.test(diffLink) ) {
 					diffLink = '#';
+				}
+				if ( !targetPage || ! /\S/.test(targetPage) ) {
+					targetPage = elem.find(".mw-changeslist-line-inner").data("target-page");
+					if ( !targetPage || ! /\S/.test(targetPage) ) {
+						targetPage = '';
+					}
 				}
 
 				info = 
@@ -291,7 +318,23 @@ $(function () {
 				localStorage['mw-recentchanges-sidebar'] += info;
 				$("#rcSidebar").append(info);
 			});
-			
+			$("#rcSidebar").append('<div style="text-align: right; padding-right: 3px;"><label><input type="checkbox" id="rcSidebar-incWD">&nbsp;' + getMsg('inc_wd') + '</label></div>');
+
+			if ( localStorage['mw-recentchanges-sidebar-incWD'] === 'enabled' ) {
+				$("#rcSidebar-incWD").prop('checked', true);
+			} else {
+				$("#rcSidebar-incWD").prop('checked', false);
+			}
+
+			$("#rcSidebar-incWD").change(function() {
+				if (!this.checked) {
+					localStorage['mw-recentchanges-sidebar-incWD'] = 'disabled';
+				} else {
+					localStorage['mw-recentchanges-sidebar-incWD'] = 'enabled';
+				}
+				timeoutIds.push(setTimeout(function() { autoRefresh(); }, 1000));
+			});
+
 			// Add page views
 			if ( localStorage['mw-recentchanges-sidebar-pageviews-year']  !== undefined ) {
 				if ( localStorage['mw-recentchanges-sidebar-pageviews-month']  !== undefined ) {
@@ -312,7 +355,7 @@ $(function () {
 				if ( isMinerva ) {
 					$("#pgViewSidebar li").css("margin-left", "20px");
 				}
-				setTimeout(function() { autoRefresh(); }, refreshRate * 1000);
+				timeoutIds.push(setTimeout(function() { autoRefresh(); }, refreshRate * 1000));
 			} else {
 				$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
 					$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
@@ -320,7 +363,7 @@ $(function () {
 					if ( isMinerva ) {
 						$("#pgViewSidebar li").css("margin-left", "20px");
 					}
-					setTimeout(function() { autoRefresh(); }, refreshRate * 1000);
+					timeoutIds.push(setTimeout(function() { autoRefresh(); }, refreshRate * 1000));
 				}).fail(function(){
 					svrDay--;
 					$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
@@ -329,10 +372,10 @@ $(function () {
 						if ( isMinerva ) {
 							$("#pgViewSidebar li").css("margin-left", "20px");
 						}
-						setTimeout(function() { autoRefresh(); }, refreshRate * 1000);
+						timeoutIds.push(setTimeout(function() { autoRefresh(); }, refreshRate * 1000));
 					}).fail(function() {
 						// Failed to get pageviews
-						setTimeout(function() { autoRefresh(); }, refreshRate * 1000);
+						timeoutIds.push(setTimeout(function() { autoRefresh(); }, refreshRate * 1000));
 					});
 				});
 			}
@@ -375,6 +418,10 @@ $(function () {
 	}
 
 	function loadCache() {
+		if ( localStorage['mw-recentchanges-sidebar-incWD'] === undefined ) {
+			localStorage['mw-recentchanges-sidebar-incWD'] = 'enabled';
+		}
+
 		if ( localStorage['mw-recentchanges-sidebar']  !== undefined ) {
 			if (localStorage['mw-recentchanges-sidebar-tab1'] !== undefined) {
 				rcText = localStorage['mw-recentchanges-sidebar-tab1'];
