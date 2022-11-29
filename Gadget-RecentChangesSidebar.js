@@ -427,6 +427,7 @@ $(function () {
 				rcText = localStorage['mw-recentchanges-sidebar-tab1'];
 				addRcText();
 				$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
+				$("#rcSidebar").append("<br />");
 			}
 		}
 		$(".rcSidebarTab").css( isMinerva ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
