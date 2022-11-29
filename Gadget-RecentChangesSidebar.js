@@ -15,7 +15,7 @@ $(function () {
 	const recentChangesWithWdURI = '/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=0&limit=15&days=7&urlversion=2';
 	var timeoutIds = [];
 	var preMarginRight = $("#mw-content-text").css("margin-right");
-	var preMinHeight = $("#mw-content-text").css("minHeight");
+	var preMinHeight = $("#mw-content-text").css("min-height");
 	var msgGrp = {
 		'sidebar_title' : {
 			'en' : 'Recent changes sidebar',
@@ -132,12 +132,13 @@ $(function () {
 			}
 
 			$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
+			$('#catlinks').css('margin-right', (sidebarWidth + 30) + 'px');
 			if (mw.config.get("wgCanonicalSpecialPageName") === "Search") {
 				$("#rcSidebar").css("margin-right", (-1 * sidebarWidth - 30) + "px");
 			} else if (/^(AbuseLog|AbuseFilter|Contributions)$/.test(mw.config.get("wgCanonicalSpecialPageName"))) {
 				$("#rcSidebar").css("top", "30px");
 			}
-			$("#mw-content-text").css("minHeight", minHeight + "px");
+			$("#mw-content-text").css("min-height", minHeight + "px");
 		} else {
 			var greyWidth = ( $("body").width() - ( $(".mw-page-container").width() + parseFloat($(".mw-page-container").css("padding-right")) + parseFloat($(".mw-page-container").css("padding-left")) ) ) / 2;
 			var ns = mw.config.get( 'wgNamespaceNumber' );
@@ -152,6 +153,7 @@ $(function () {
 						'margin-right': (sidebarWidth + 30) + 'px',
 						'min-height': minHeight + 'px'
 					});
+					$('#catlinks').css('margin-right', (sidebarWidth + 30) + 'px');
 					if ($(".mw-indicators").children().length > 0) {
 						$("#rcSidebar").css("top", "43px");
 					}
@@ -161,6 +163,7 @@ $(function () {
 						'margin-right': 0,
 						'min-height': 0
 					});
+					$('#catlinks').css('margin-right', 0);
 					if ($(".mw-indicators").children().length > 0) {
 						$("#rcSidebar").css("top", 0);
 					}
@@ -176,6 +179,7 @@ $(function () {
 						'margin-right': (sidebarWidth + 30) + 'px',
 						'min-height': minHeight + 'px'
 					});
+					$('#catlinks').css('margin-right', (sidebarWidth + 30) + 'px');
 					if ($(".mw-indicators").children().length > 0) {
 						$("#rcSidebar").css("top", "43px");
 					}
@@ -185,6 +189,7 @@ $(function () {
 						'margin-right': 0,
 						'min-height': 0
 					});
+					$('#catlinks').css('margin-right', 0);
 					if ($(".mw-indicators").children().length > 0) {
 						$("#rcSidebar").css("top", 0);
 					}
@@ -388,6 +393,7 @@ $(function () {
 			"margin-right": preMarginRight,
 			"min-height": preMinHeight
 		});
+		$('#catlinks').css('margin-right', preMarginRight);
 		$("#rcSidebar").show();
 		$(window).trigger("resize");
 	}
@@ -398,6 +404,7 @@ $(function () {
 			"margin-right": 0,
 			"min-height": 0
 		});
+		$('#catlinks').css('margin-right', 0);
 		$("#rcSidebar").hide();
 	}
 
@@ -460,7 +467,7 @@ $(function () {
 		}
 
 		preMarginRight = $("#mw-content-text").css("margin-right");
-		preMinHeight = $("#mw-content-text").css("minHeight");
+		preMinHeight = $("#mw-content-text").css("min-height");
 
 		$(window).resize(function() {
 			if (isVector && !isLegacyVector) {
@@ -470,7 +477,7 @@ $(function () {
 			}
 			if ( $("#rcSidebar").isInViewport() ) {
 				preMarginRight = $("#mw-content-text").css("margin-right");
-				preMinHeight = $("#mw-content-text").css("minHeight");
+				preMinHeight = $("#mw-content-text").css("min-height");
 			}
 		});
 
