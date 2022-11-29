@@ -427,7 +427,8 @@ $(function () {
 				rcText = localStorage['mw-recentchanges-sidebar-tab1'];
 				addRcText();
 				$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
-				$("#rcSidebar").append("<br />");
+				$("#rcSidebar").append('<div style="text-align: right; padding-right: 3px;"><label><input type="checkbox" id="rcSidebar-incWD">&nbsp;' + getMsg('inc_wd') + '</label></div>');
+				$("#rcSidebar-incWD").attr("disabled", "disabled").off('click');
 			}
 		}
 		$(".rcSidebarTab").css( isMinerva ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
