@@ -9,7 +9,8 @@ $(function () {
 	const isVector = /vector/.test( mw.config.get("skin") );
 	const isMinerva = /minerva/.test( mw.config.get("skin") );
 	const isLegacyVector = ( $(".skin-vector-legacy").length > 0 );
-	const pageViewsURI = '//wikimedia.org/api/rest_v1/metrics/pageviews/top/ko.wikipedia.org/all-access';
+	const langCode = mw.config.get( 'wgContentLanguage' );
+	const pageViewsURI = '//wikimedia.org/api/rest_v1/metrics/pageviews/top/' + langCode + '.wikipedia.org/all-access';
 	var preMarginRight = $("#mw-content-text").css("margin-right");
 	var preMinHeight = $("#mw-content-text").css("minHeight");
 	var msgGrp = {
@@ -186,7 +187,6 @@ $(function () {
 	}
 
 	function getMsg(msgCode) {
-		var langCode = mw.config.get( 'wgContentLanguage' );
 		var result = "";
 		if (!/\S/.test(langCode)) {
 			langCode = "en";
@@ -290,9 +290,9 @@ $(function () {
 			if ( localStorage['mw-recentchanges-sidebar-pageviews-year']  !== undefined ) {
 				if ( localStorage['mw-recentchanges-sidebar-pageviews-month']  !== undefined ) {
 					if ( localStorage['mw-recentchanges-sidebar-pageviews-year']  !== undefined ) {
-						if ( svrYear === localStorage['mw-recentchanges-sidebar-pageviews-year'] &&
-						     svrMonth === localStorage['mw-recentchanges-sidebar-pageviews-month'] &&
-						     svrDay === localStorage['mw-recentchanges-sidebar-pageviews-day']
+						if ( svrYear.toString() === localStorage['mw-recentchanges-sidebar-pageviews-year'] &&
+						     svrMonth.toString() === localStorage['mw-recentchanges-sidebar-pageviews-month'] &&
+						     svrDay.toString() === localStorage['mw-recentchanges-sidebar-pageviews-day']
 						) {
 							usePageViewsCache = true;
 						}
@@ -301,11 +301,12 @@ $(function () {
 			}
 
 			if (usePageViewsCache) {
-				$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
+				$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar-pageviews']);
 				$("#pgViewSidebar").css(pgViewSidebarSTyle);
 				if ( isMinerva ) {
 					$("#pgViewSidebar li").css("margin-left", "20px");
 				}
+				setTimeout(function() { autoRefresh(); }, refreshRate * 1000);
 			} else {
 				$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
 					$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
