@@ -277,7 +277,12 @@ $(function () {
 				var targetPage = elem.find(".mw-changeslist-line-inner").data("target-page");
 				var changedDate = elem.find(".mw-changeslist-date").text();
 				var diffLink = $(elem.find(".mw-changeslist-links > span > a:first")[0]).attr('href');
-				var info = 
+				var info;
+				if ( ! /&diff=/.test(diffLink) ) {
+					diffLink = '#';
+				}
+
+				info = 
 					'<div title="' + targetPage + '" style="display: inline-block; width: ' +
 					(sidebarWidth - 40) + 'px; white-space: nowrap; overflow: hidden; margin-left: 2px; vertical-align: text-top;">' +
 					'<a href="/wiki/' + encodeURIComponent(targetPage) + '">' + targetPage + '</a></div>' +
