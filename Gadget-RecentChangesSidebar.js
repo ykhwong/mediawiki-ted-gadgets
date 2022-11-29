@@ -111,12 +111,15 @@ $(function () {
 
 	function init() {
 		var isInited = false;
+		if ( $("#rcSidebar").length > 0 ) {
+			return false;
+		}
 		if ( window.rc_sidebar !== undefined ) {
 			if ( window.rc_sidebar.config !== undefined ) {
-				options = window.rc_sidebar.config
+				options = window.rc_sidebar.config;
 			}
 			if ( window.rc_sidebar.messages !== undefined ) {
-				messages = window.rc_sidebar.messages
+				messages = window.rc_sidebar.messages;
 			}
 		}
 		
