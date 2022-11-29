@@ -12,9 +12,6 @@ $(function () {
 	const pageViewsURI = '//wikimedia.org/api/rest_v1/metrics/pageviews/top/ko.wikipedia.org/all-access';
 	var preMarginRight = $("#mw-content-text").css("margin-right");
 	var preMinHeight = $("#mw-content-text").css("minHeight");
-	var options = {
-		autoresize : false
-	};
 	var msgGrp = {
 		'sidebar_title' : {
 			'en' : 'Recent changes sidebar',
@@ -143,17 +140,21 @@ $(function () {
 					} else {
 						$("#rcSidebar").css("margin-right", 0);
 					}
-					$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
-					$("#mw-content-text").css("minHeight", minHeight + "px");
+					$("#mw-content-text").css({
+						'margin-right': (sidebarWidth + 30) + 'px',
+						'min-height': minHeight + 'px'
+					});
 					if ($(".mw-indicators").children().length > 0) {
 						$("#rcSidebar").css("top", "43px");
 					}
 				} else {
 					$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 90) + "px");
-					$("#mw-content-text").css("margin-right", "0px");
-					$("#mw-content-text").css("minHeight", "0px");
+					$("#mw-content-text").css({
+						'margin-right': 0,
+						'min-height': 0
+					});
 					if ($(".mw-indicators").children().length > 0) {
-						$("#rcSidebar").css("top", "0px");
+						$("#rcSidebar").css("top", 0);
 					}
 				}
 			} else {
@@ -163,17 +164,21 @@ $(function () {
 					} else {
 						$("#rcSidebar").css("margin-right", 0);
 					}
-					$("#mw-content-text").css("margin-right", (sidebarWidth + 30) + "px");
-					$("#mw-content-text").css("minHeight", minHeight + "px");
+					$("#mw-content-text").css({
+						'margin-right': (sidebarWidth + 30) + 'px',
+						'min-height': minHeight + 'px'
+					});
 					if ($(".mw-indicators").children().length > 0) {
 						$("#rcSidebar").css("top", "43px");
 					}
 				} else {
 					$("#rcSidebar").css("margin-right", -1 * (sidebarWidth + 30) + "px");
-					$("#mw-content-text").css("margin-right", "0px");
-					$("#mw-content-text").css("minHeight", "0px");
+					$("#mw-content-text").css({
+						'margin-right': 0,
+						'min-height': 0
+					});
 					if ($(".mw-indicators").children().length > 0) {
-						$("#rcSidebar").css("top", "0px");
+						$("#rcSidebar").css("top", 0);
 					}
 				}
 			}
@@ -214,6 +219,7 @@ $(function () {
 		retData = '<div id="pgViewSidebar"><div style="font-weight: bold;">' + getMsg('top_view') + ' (' + date.year + '-' + date.month + '-' + date.day + ')</div>';
 		retData += '<ol>';
 		var ignore = false;
+		localStorage['mw-recentchanges-sidebar-pageviews'] = '';
 		$.each( info.items[0].articles, function( i, item ) {
 			ignore = false;
 			for ( var i = 0; i < getMsg('namespace_prefixes').length; i++ ) {
@@ -234,14 +240,18 @@ $(function () {
 			}
 		});
 		retData += '</ol></div>';
+		localStorage['mw-recentchanges-sidebar-pageviews'] += retData;
+		localStorage['mw-recentchanges-sidebar-pageviews-year'] = date.year;
+		localStorage['mw-recentchanges-sidebar-pageviews-month'] = date.month;
+		localStorage['mw-recentchanges-sidebar-pageviews-day'] = date.day;
 		return retData;
 	}
 	
-	function refresh() {
+	function autoRefresh() {
 		if (!$("#rcSidebar").isInViewport() || document.hidden || document.msHidden || document.webkitHidden || document.mozHidden ||
 		localStorage['mw-recentchanges-sidebar-state'] === 'hidden') {
 			setTimeout(function() {
-				refresh();
+				autoRefresh();
 			}, 1000);
 			return;
 		}
@@ -251,13 +261,16 @@ $(function () {
 			var svrDay = dateObj.getDate() - 1;
 			var svrYear = dateObj.getFullYear();
 			var special = $(data).find(".special");
+			var usePageViewsCache = false;
+			
+			// Add recent changes info
 			rcText = $(data).find("#firstHeading").text();
 			if ( !/\S/.test(rcText) ) {
 				rcText = $(data).find("#section_0").text();
 			}
 			localStorage['mw-recentchanges-sidebar-tab1'] = rcText;
 			addRcText();
-			$(".rcSidebarTab").css( ! isVector ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
+			$(".rcSidebarTab").css( isMinerva ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
 			localStorage['mw-recentchanges-sidebar'] = "";
 			special.children().each(function() {
 				var elem = $(this);
@@ -272,27 +285,50 @@ $(function () {
 				localStorage['mw-recentchanges-sidebar'] += info;
 				$("#rcSidebar").append(info);
 			});
-			$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
-				$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
+			
+			// Add page views
+			if ( localStorage['mw-recentchanges-sidebar-pageviews-year']  !== undefined ) {
+				if ( localStorage['mw-recentchanges-sidebar-pageviews-month']  !== undefined ) {
+					if ( localStorage['mw-recentchanges-sidebar-pageviews-year']  !== undefined ) {
+						if ( svrYear === localStorage['mw-recentchanges-sidebar-pageviews-year'] &&
+						     svrMonth === localStorage['mw-recentchanges-sidebar-pageviews-month'] &&
+						     svrDay === localStorage['mw-recentchanges-sidebar-pageviews-day']
+						) {
+							usePageViewsCache = true;
+						}
+					}
+				}
+			}
+
+			if (usePageViewsCache) {
+				$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
 				$("#pgViewSidebar").css(pgViewSidebarSTyle);
-				if ( ! isVector ) {
+				if ( isMinerva ) {
 					$("#pgViewSidebar li").css("margin-left", "20px");
 				}
-				setTimeout(function() { refresh(); }, refreshRate * 1000);
-			}).fail(function(){
-				svrDay--;
+			} else {
 				$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
 					$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
 					$("#pgViewSidebar").css(pgViewSidebarSTyle);
-					if ( ! isVector ) {
+					if ( isMinerva ) {
 						$("#pgViewSidebar li").css("margin-left", "20px");
 					}
-					setTimeout(function() { refresh(); }, refreshRate * 1000);
-				}).fail(function() {
-					// Failed to get pageviews
-					setTimeout(function() { refresh(); }, refreshRate * 1000);
+					setTimeout(function() { autoRefresh(); }, refreshRate * 1000);
+				}).fail(function(){
+					svrDay--;
+					$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
+						$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
+						$("#pgViewSidebar").css(pgViewSidebarSTyle);
+						if ( isMinerva ) {
+							$("#pgViewSidebar li").css("margin-left", "20px");
+						}
+						setTimeout(function() { autoRefresh(); }, refreshRate * 1000);
+					}).fail(function() {
+						// Failed to get pageviews
+						setTimeout(function() { autoRefresh(); }, refreshRate * 1000);
+					});
 				});
-			});
+			}
 		});
 	}
 
@@ -315,11 +351,39 @@ $(function () {
 		$("#rcSidebar").hide();
 	}
 
-	function toggleState() {
+	function initSidebar() {
+		if (localStorage['mw-recentchanges-sidebar-state'] === 'hidden') {
+			hideSidebar();
+		} else {
+			showSidebar();
+		}
+	}
+
+	function toggleSidebar() {
 		if (localStorage['mw-recentchanges-sidebar-state'] !== 'hidden') {
 			hideSidebar();
 		} else {
 			showSidebar();
+		}
+	}
+
+	function loadCache() {
+		if ( localStorage['mw-recentchanges-sidebar']  !== undefined ) {
+			if (localStorage['mw-recentchanges-sidebar-tab1'] !== undefined) {
+				rcText = localStorage['mw-recentchanges-sidebar-tab1'];
+				addRcText();
+				$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
+			}
+		}
+		$(".rcSidebarTab").css( isMinerva ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
+		$(".mw-parser-output").css("word-wrap", "break-word");
+
+		if ( localStorage['mw-recentchanges-sidebar-pageviews']  !== undefined ) {
+			$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar-pageviews']);
+			$("#pgViewSidebar").css(pgViewSidebarSTyle);
+			if ( isMinerva ) {
+				$("#pgViewSidebar li").css("margin-left", "20px");
+			}
 		}
 	}
 
@@ -329,17 +393,8 @@ $(function () {
 		}
 
 		procVector();
-		if ( localStorage['mw-recentchanges-sidebar']  !== undefined ) {
-			if (localStorage['mw-recentchanges-sidebar-tab1'] !== undefined) {
-				rcText = localStorage['mw-recentchanges-sidebar-tab1'];
-				addRcText();
-				$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar']);
-			}
-		}
-		$(".rcSidebarTab").css( ! isVector ? rcSidebarTabMobileStyle : rcSidebarTabStyle );
-		$(".mw-parser-output").css("word-wrap", "break-word");
-
-		refresh();
+		loadCache();
+		autoRefresh();
 
 		if ( ! isVector ) {
 			return;
@@ -347,12 +402,11 @@ $(function () {
 
 		preMarginRight = $("#mw-content-text").css("margin-right");
 		preMinHeight = $("#mw-content-text").css("minHeight");
+
 		$(window).resize(function() {
-			if (!isLegacyVector) {
-				if ( !options.autoresize || ( options.autoresize && $("#rcSidebar").isInViewport() )) {
-					if (localStorage['mw-recentchanges-sidebar-state'] !== 'hidden') {
-						procVector();
-					}
+			if (isVector && !isLegacyVector) {
+				if (localStorage['mw-recentchanges-sidebar-state'] !== 'hidden') {
+					procVector();
 				}
 			}
 			if ( $("#rcSidebar").isInViewport() ) {
@@ -360,30 +414,12 @@ $(function () {
 				preMinHeight = $("#mw-content-text").css("minHeight");
 			}
 		});
-		$(window).scroll(function() {
-			if (!options.autoresize) {
-				return;
-			}
-			if ( !$("#rcSidebar").isInViewport() ) {
-				$("#mw-content-text").css("margin-right", "0px");
-				$("#mw-content-text").css("minHeight", "0px");
-			} else {
-				$("#mw-content-text").css("margin-right", preMarginRight);
-				$("#mw-content-text").css("minHeight", preMinHeight);
-				if (!isLegacyVector) {
-					procVector();
-				}
-			}
-		});
+
 		$(document).on('click', '.vector-limited-width-toggle', function () {
 			$(window).trigger("resize");
 		});
 
-		if (localStorage['mw-recentchanges-sidebar-state'] == 'hidden') {
-			hideSidebar();
-		} else {
-			showSidebar();
-		}
+		initSidebar();
 
 		$toggle = $( '<li><a><span></span></a></li>' )
 			.attr( 'id', 'ca-recentchanges' )
@@ -392,13 +428,13 @@ $(function () {
 			.attr( 'title', getMsg('sidebar_desc') ); // Toggle recent changes sidebar
 		$toggle.find( 'span' )
 			.text( getMsg('sidebar_title') ) // Recent changes sidebar
-			.click( toggleState );
+			.click( toggleSidebar );
 		if ( $( '#ca-nstab-special' ).length > 0 ) {
 			$( '#ca-nstab-special' ).parent().append( $toggle );
 		} else {
 			$( '#p-views ul' ).append( $toggle );
 		}
 	}
-	
+
 	main();
 }());
