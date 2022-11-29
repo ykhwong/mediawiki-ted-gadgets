@@ -14,6 +14,8 @@ $(function () {
 	const recentChangesURI = '/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2';
 	const recentChangesWithWdURI = '/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=0&limit=15&days=7&urlversion=2';
 	var timeoutIds = [];
+	var options = {};
+	var messages = {};
 	var preMarginRight = $("#mw-content-text").css("margin-right");
 	var preMinHeight = $("#mw-content-text").css("min-height");
 	var msgGrp = {
@@ -109,6 +111,21 @@ $(function () {
 
 	function init() {
 		var isInited = false;
+		if ( window.rc_sidebar !== undefined ) {
+			if ( window.rc_sidebar.config !== undefined ) {
+				options = window.rc_sidebar.config
+			}
+			if ( window.rc_sidebar.messages !== undefined ) {
+				messages = window.rc_sidebar.messages
+			}
+		}
+		
+		if ( options.enabled !== undefined ) {
+			if ( ! options.enabled ) {
+				return false;
+			}
+		}
+
 		if ( isMinerva ) {
 			$(".footer-content").append('<div id="rcSidebar"></div>');
 			$("#rcSidebar").css(rcSidebarMobileStyle);
@@ -200,6 +217,11 @@ $(function () {
 
 	function getMsg(msgCode) {
 		var result = "";
+
+		if ( messages[msgCode] !== undefined ) {
+			return messages[msgCode];
+		}
+
 		if (!/\S/.test(langCode)) {
 			langCode = "en";
 		}
