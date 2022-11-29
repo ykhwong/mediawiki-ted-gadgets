@@ -282,7 +282,7 @@ $(function () {
 					(sidebarWidth - 40) + 'px; white-space: nowrap; overflow: hidden; margin-left: 2px; vertical-align: text-top;">' +
 					'<a href="/wiki/' + encodeURIComponent(targetPage) + '">' + targetPage + '</a></div>' +
 					'<div style="display:inline-block; white-space: nowrap; padding-left: 5px; color:black; font-size:smaller; vertical-align: text-top;">' +
-					'<a href=' + diffLink + '</a>' + changedDate + "</a></div>" + '<br />';
+					'<a style="color: black;" href=' + diffLink + '</a>' + changedDate + "</a></div>" + '<br />';
 				localStorage['mw-recentchanges-sidebar'] += info;
 				$("#rcSidebar").append(info);
 			});
