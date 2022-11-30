@@ -38,16 +38,6 @@ $(function () {
 		'inc_wd' : {
 			'en' : 'Inc. WD',
 			'ko' : 'WD 포함'
-		},
-		'namespace_prefixes' : {
-			'en' : [
-				'Talk', 'User', 'User talk', 'Wikipedia', 'Wikipedia talk', 'File', 'File talk', 'MediaWiki', 'MediaWiki talk', 'Template', 'Template talk', 'Help', 'Help talk', 'Category', 'Category talk',
-				'Portal', 'Portal talk', 'Draft', 'Draft talk', 'TimedText', 'TimedText talk', 'Module', 'Module talk', 'Special', 'Media'
-			],
-			'ko' : [
-				'토론', '사용자', '사용자토론', '위키백과', '위키백과토론', '파일', '파일토론', '미디어위키', '미디어위키토론', '틀', '틀토론', '도움말', '도움말토론', '분류', '분류토론',
-				'포털', '포털토론', '위키프로젝트', '위키프로젝트토론', '초안', '초안토론', 'TimedText', 'TimedText Talk', '모듈', '모듈토론', '특수', '미디어'
-			]
 		}
 	};
 
@@ -259,8 +249,9 @@ $(function () {
 		localStorage['mw-recentchanges-sidebar-pageviews'] = '';
 		$.each( info.items[0].articles, function( i, item ) {
 			ignore = false;
-			for ( var i = 0; i < getMsg('namespace_prefixes').length; i++ ) {
-				if ( item.article.startsWith(getMsg('namespace_prefixes')[i] + ':') ) {
+			var nsgrp = mw.config.get('wgFormattedNamespaces');
+			for ( var i = 1; i < nsgrp.length; i++ ) {
+				if ( item.article.startsWith(nsgrp[i] + ':') ) {
 					ignore = true;
 					break;
 				}
