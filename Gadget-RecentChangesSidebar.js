@@ -374,6 +374,11 @@ $(function () {
 			if ( localStorage['mw-recentchanges-sidebar-pageviews-year']  !== undefined ) {
 				if ( localStorage['mw-recentchanges-sidebar-pageviews-month']  !== undefined ) {
 					if ( localStorage['mw-recentchanges-sidebar-pageviews-year']  !== undefined ) {
+						$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar-pageviews']);
+						$("#pgViewSidebar").css(pgViewSidebarSTyle);
+						if ( isMinerva ) {
+							$("#pgViewSidebar li").css("margin-left", "20px");
+						}
 						if ( svrYear.toString() === localStorage['mw-recentchanges-sidebar-pageviews-year'] &&
 						     svrMonth.toString() === localStorage['mw-recentchanges-sidebar-pageviews-month'] &&
 						     svrDay.toString() === localStorage['mw-recentchanges-sidebar-pageviews-day']
@@ -385,14 +390,10 @@ $(function () {
 			}
 
 			if (usePageViewsCache) {
-				$("#rcSidebar").append(localStorage['mw-recentchanges-sidebar-pageviews']);
-				$("#pgViewSidebar").css(pgViewSidebarSTyle);
-				if ( isMinerva ) {
-					$("#pgViewSidebar li").css("margin-left", "20px");
-				}
 				timeoutIds.push(setTimeout(function() { autoRefresh(); }, refreshRate * 1000));
 			} else {
 				$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
+					$("#pgViewSidebar").remove();
 					$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
 					$("#pgViewSidebar").css(pgViewSidebarSTyle);
 					if ( isMinerva ) {
@@ -402,6 +403,7 @@ $(function () {
 				}).fail(function(){
 					svrDay--;
 					$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
+						$("#pgViewSidebar").remove();
 						$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
 						$("#pgViewSidebar").css(pgViewSidebarSTyle);
 						if ( isMinerva ) {
