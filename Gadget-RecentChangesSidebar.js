@@ -282,6 +282,24 @@ $(function () {
 		timeoutIds = [];
 	}
 
+	function getPrevDate(svrYear, svrMonth, svrDay) {
+		var tmpDateStr = svrYear + "-" + svrMonth + "-" + svrDay;
+		var newDateStr = '';
+		var tmpDate = new Date(tmpDateStr);
+		var result = {};
+		tmpDate.setDate(tmpDate.getDate() - 1);
+		newDateStr = tmpDate.toISOString().split('T')[0];
+		svrYear = newDateStr.split('-')[0];
+		svrMonth = newDateStr.split('-')[1];
+		svrDay = newDateStr.split('-')[2];
+		result = {
+			year: svrYear,
+			month: svrMonth,
+			day: svrDay
+		};
+		return result;
+	}
+
 	function autoRefresh() {
 		var rcURI;
 		if (!$("#rcSidebar").isInViewport() || document.hidden || document.msHidden || document.webkitHidden || document.mozHidden ||
@@ -300,11 +318,15 @@ $(function () {
 		$.get(rcURI, function (data, txtStat, req) {
 			var dateObj = new Date(req.getResponseHeader('Date'));
 			var svrMonth = dateObj.getMonth() + 1;
-			var svrDay = dateObj.getDate() - 1;
+			var svrDay = dateObj.getDate();
 			var svrYear = dateObj.getFullYear();
 			var special = $(data).find(".special");
 			var usePageViewsCache = false;
-			
+			var prevDate = getPrevDate(svrYear, svrMonth, svrDay);
+			svrYear = prevDate.year;
+			svrMonth = prevDate.month;
+			svrDay = prevDate.day;
+
 			// Add recent changes info
 			rcText = $(data).find("#firstHeading").text();
 			if ( !/\S/.test(rcText) ) {
@@ -392,7 +414,10 @@ $(function () {
 					}
 					timeoutIds.push(setTimeout(function() { autoRefresh(); }, refreshRate * 1000));
 				}).fail(function(){
-					svrDay--;
+					prevDate = getPrevDate(svrYear, svrMonth, svrDay);
+					svrYear = prevDate.year;
+					svrMonth = prevDate.month;
+					svrDay = prevDate.day;
 					$.getJSON(pageViewsURI + '/' + svrYear + '/' + ("0" + svrMonth).slice(-2) + '/' + ("0" + svrDay).slice(-2)).done(function (data) {
 						$("#pgViewSidebar").remove();
 						$("#rcSidebar").append(getPageViews(data, { month: svrMonth, day: svrDay, year: svrYear }));
