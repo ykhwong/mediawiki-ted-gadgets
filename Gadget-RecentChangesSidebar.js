@@ -2,22 +2,23 @@
 * RecentChanges SideBar
 * @author ykhwong
 */
+/*jshint esversion: 6 */
 $(function () {
+	var langCode = mw.config.get( 'wgContentLanguage' );
+	var timeoutIds = [];
+	var options = {};
+	var messages = {};
+	var preMarginRight = $("#mw-content-text").css("margin-right");
+	var preMinHeight = $("#mw-content-text").css("min-height");
 	const sidebarWidth = 200;
 	const minHeight = 400;
 	const refreshRate = 10;
 	const isVector = /vector/.test( mw.config.get("skin") );
 	const isMinerva = /minerva/.test( mw.config.get("skin") );
 	const isLegacyVector = ( $(".skin-vector-legacy").length > 0 );
-	const langCode = mw.config.get( 'wgContentLanguage' );
 	const pageViewsURI = '//wikimedia.org/api/rest_v1/metrics/pageviews/top/' + langCode + '.wikipedia.org/all-access';
 	const recentChangesURI = '/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2';
 	const recentChangesWithWdURI = '/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=0&limit=15&days=7&urlversion=2';
-	var timeoutIds = [];
-	var options = {};
-	var messages = {};
-	var preMarginRight = $("#mw-content-text").css("margin-right");
-	var preMinHeight = $("#mw-content-text").css("min-height");
 	var msgGrp = {
 		'sidebar_title' : {
 			'en' : 'Recent changes sidebar',
@@ -250,8 +251,8 @@ $(function () {
 		$.each( info.items[0].articles, function( i, item ) {
 			ignore = false;
 			var nsgrp = mw.config.get('wgFormattedNamespaces');
-			for ( var i = 1; i < nsgrp.length; i++ ) {
-				if ( item.article.startsWith(nsgrp[i] + ':') ) {
+			for ( var i2 = 1; i2 < Object.keys(nsgrp).length; i2++ ) {
+				if ( item.article.startsWith(nsgrp[Object.keys(nsgrp)[i2]] + ':') ) {
 					ignore = true;
 					break;
 				}
