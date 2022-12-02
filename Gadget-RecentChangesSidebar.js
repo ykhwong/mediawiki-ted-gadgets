@@ -284,7 +284,7 @@ $(function () {
 	}
 
 	function getPrevDate(svrYear, svrMonth, svrDay) {
-		var tmpDateStr = svrYear + "-" + svrMonth + "-" + svrDay;
+		var tmpDateStr = svrYear + "-" + ("0" + svrMonth).slice(-2) + "-" + ("0" + svrDay).slice(-2);
 		var newDateStr = '';
 		var tmpDate = new Date(tmpDateStr);
 		var result = {};
