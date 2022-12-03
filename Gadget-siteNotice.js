@@ -5,6 +5,7 @@
 * @author ykhwong
 * Reference: https://gerrit.wikimedia.org/r/plugins/gitiles/mediawiki/extensions/DismissableSiteNotice/+/master/modules/ext.dismissableSiteNotice.js
 */
+/*jshint esversion: 6 */
 const noticeGrpPage = '틀:소도구/noticeGrp';
 const isBot = /bot|googlebot|crawler|spider|robot|crawling/i.test(navigator.userAgent);
 const isMobile = /\.m\.wikipedia\.org/.test(window.location.host);
@@ -73,9 +74,10 @@ function procDismiss() {
 		$("#siteNoticeLocal").css(
 			{
 			  'position': 'relative',
-			  'padding': '12px',
-			  'padding-right': '12px',
-			  'padding-bottom': '15px'
+			  'padding-left': $("#siteNoticeLocal").css('padding-left') === '0px' ? '12px' : $("#siteNoticeLocal").css('padding-left'),
+			  'padding-top': $("#siteNoticeLocal").css('padding-top') === '0px' ? '12px' : $("#siteNoticeLocal").css('padding-top'),
+			  'padding-right': $("#siteNoticeLocal").css('padding-right') === '0px' ? '12px' : $("#siteNoticeLocal").css('padding-right'),
+			  'padding-bottom': $("#siteNoticeLocal").css('padding-bottom') === '0px' ? '15px' : $("#siteNoticeLocal").css('padding-bottom'),
 			}
 		);
 		$(".mw-dismissable-notice-close2").css(
