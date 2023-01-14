@@ -13,7 +13,10 @@ $(function () {
 	];
 
 	function addImg(nTxt, fileUrl, lvl) {
-		var imgTag = "<img style='margin-left: -23px; padding-right: 8px; padding-top: 3px; float: left;' width='14' height='14' src=" + fileUrl + ">";
+		var imgStyle = "margin-left: -23px; padding-right: 8px; padding-top: 3px;";
+		var imgTag = "<img src=" + fileUrl + " width='14' height='14'" + " style='" + imgStyle +
+		( tocname !== '#toc' ? "float: left;" : "" ) + "'>";
+
 		$(nTxt).prepend("<img width='14' height='14' src=" + fileUrl + ">");
 		if ( tocname === '#toc' ) {
 			$($($( levelname )[lvl]).find("a")[0]).prepend(imgTag);
@@ -42,12 +45,14 @@ $(function () {
 	}
 
 	$( levelname ).each( function ( i, li ) {
+		if ( i === 0 ) {
+			return true;
+		}
 		var cnt = 0;
 		var checked = false;
 		var sibl;
 		var txt;
 		var nTxt;
-
 		if ( tocname === '#toc' ) {
 			txt = '#' + $.escapeSelector($( li )
 			.find( 'span.toctext' ).text()
@@ -74,12 +79,21 @@ $(function () {
 		}
 
 		nTxt = txt.replace(/^#/, tocname + "-") + " .sidebar-toc-text";
-		sibl = $(txt).parent().next();
-		if ( sibl.html() === undefined ) {
+
+		if ( $(".mw-heading").length === 0 ) {
 			return;
 		}
-
-		while ( sibl.html() && !/^(h2|h3)$/i.test(sibl[0].nodeName) ) {
+		
+		var mwMainHead = $($(".mw-heading")[i - 1]);
+		var mwHead = mwMainHead.next();
+		while (true) {
+			if (mwHead[0] === undefined) {
+				break;
+			}
+			if ($(mwHead[0]).hasClass('mw-heading')) {
+				break;
+			}
+			var sibl = mwHead;
 			var imgTag = sibl.find('img');
 			var pp = sibl.clone().find('noscript').contents().unwrap();
 			if ( pp.length > 0 ) {
@@ -106,7 +120,7 @@ $(function () {
 					break;
 				}
 			}
-			sibl = sibl.next();
+			mwHead = mwHead.next();
 		}
 
 		if ( !checked ) {
