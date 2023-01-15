@@ -45,12 +45,11 @@ $(function () {
 	}
 
 	$( levelname ).each( function ( i, li ) {
-		if ( i === 0 ) {
+		if ( tocname !== '#toc' && i === 0 ) {
 			return true;
 		}
 		var cnt = 0;
 		var checked = false;
-		var sibl;
 		var txt;
 		var nTxt;
 		if ( tocname === '#toc' ) {
@@ -84,7 +83,7 @@ $(function () {
 			return;
 		}
 		
-		var mwMainHead = $($(".mw-heading")[i - 1]);
+		var mwMainHead = $($(".mw-heading")[ tocname !== '#toc' ? i - 1 : i]);
 		var mwHead = mwMainHead.next();
 		while (true) {
 			if (mwHead[0] === undefined) {
