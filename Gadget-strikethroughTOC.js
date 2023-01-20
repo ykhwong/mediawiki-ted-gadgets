@@ -21,7 +21,7 @@ $(function () {
 		if ( tocname === '#toc' ) {
 			$($($( levelname )[lvl]).find("a")[0]).prepend(imgTag);
 		} else {
-			$($($( levelname )[lvl]).find("a")[0]).find('.sidebar-toc-text').prepend(imgTag);
+			$($($( levelname )[lvl]).find("a")[0]).find('.vector-toc-text').prepend(imgTag);
 		}
 	}
 
@@ -36,7 +36,7 @@ $(function () {
 
 	if ( $('#mw-panel-toc ul').length > 0 ) {
 		tocname = '#mw-panel-toc';
-		levelname = tocname + ' li.sidebar-toc-level-1';
+		levelname = tocname + ' li.vector-toc-level-1';
 	} else if ( $('#toc ul').length > 0 ) {
 		tocname = '#toc';
 		levelname = tocname + ' li.toclevel-1';
@@ -58,8 +58,8 @@ $(function () {
 			.replace(/‎+/g, "")
 			.replace(/\s+/g, "_"));
 		} else {
-			var itemNo = $( li ).find( '.sidebar-toc-text .sidebar-toc-numb' ).text();
-			var itemTxt = $( li ).find( '.sidebar-toc-text' ).text().replace(itemNo, "");
+			var itemNo = $( li ).find( '.vector-toc-text .vector-toc-numb' ).text();
+			var itemTxt = $( li ).find( '.vector-toc-text' ).text().replace(itemNo, "");
 			txt = '#' + $.escapeSelector(itemTxt
 				.replace(/‎+/g, "").trim()
 				.replace(/\s+/g, "_"));
@@ -77,7 +77,7 @@ $(function () {
 			txt = txt + "_" + cnt;
 		}
 
-		nTxt = txt.replace(/^#/, tocname + "-") + " .sidebar-toc-text";
+		nTxt = txt.replace(/^#/, tocname + "-") + " .vector-toc-text";
 
 		if ( $(".mw-heading").length === 0 ) {
 			return;
