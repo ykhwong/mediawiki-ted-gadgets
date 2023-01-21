@@ -17,8 +17,8 @@ $(function () {
 	const isMinerva = /minerva/.test( mw.config.get("skin") );
 	const isLegacyVector = ( $(".skin-vector-legacy").length > 0 );
 	const pageViewsURI = '//wikimedia.org/api/rest_v1/metrics/pageviews/top/' + langCode + '.wikipedia.org/all-access';
-	const recentChangesURI = '/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2';
-	const recentChangesWithWdURI = '/wiki/Special:RecentChanges?hidebots=0&hidecategorization=1&hideWikibase=0&limit=15&days=7&urlversion=2';
+	const recentChangesURI = '/wiki/Special:RecentChanges?hidecategorization=1&hideWikibase=1&limit=15&days=7&urlversion=2';
+	const recentChangesWithWdURI = '/wiki/Special:RecentChanges?hidecategorization=1&hideWikibase=0&limit=15&days=7&urlversion=2';
 	var msgGrp = {
 		'sidebar_title' : {
 			'en' : 'Recent changes sidebar',
@@ -314,6 +314,18 @@ $(function () {
 			rcURI = recentChangesWithWdURI;
 		} else {
 			rcURI = recentChangesURI;
+		}
+		if ( options.params !== undefined && options.params.length > 0 ) {
+			for ( var i = 0; i < options.params.length; i++ ) {
+				var param = options.params[i].trim();
+				if ( !/(\S)=(\S)/.test(param) ) {
+					continue;
+				}
+				rcURI += '&' + param;
+			}
+		}
+		if ( !/&hidebots=/i.test(rcURI) ) {
+			rcURI += '&hidebots=0';
 		}
 
 		$.get(rcURI, function (data, txtStat, req) {
