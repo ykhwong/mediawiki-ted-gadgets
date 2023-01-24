@@ -10,7 +10,7 @@ $(function () {
 	var messages = {};
 	var preMarginRight = $("#mw-content-text").css("margin-right");
 	var preMinHeight = $("#mw-content-text").css("min-height");
-	const sidebarWidth = 200;
+	const sidebarWidth = 190;
 	const minHeight = 400;
 	const refreshRate = 10;
 	const isVector = /vector/.test( mw.config.get("skin") );
@@ -470,6 +470,7 @@ $(function () {
 	}
 
 	function initSidebar() {
+		$(window).trigger("resize");
 		if (localStorage['mw-recentchanges-sidebar-state'] === 'hidden') {
 			hideSidebar();
 		} else {
@@ -539,6 +540,39 @@ $(function () {
 			if ( $("#rcSidebar").isInViewport() ) {
 				preMarginRight = $("#mw-content-text").css("margin-right");
 				preMinHeight = $("#mw-content-text").css("min-height");
+			}
+
+			if (
+				$(".vector-column-end").length > 0 &&
+				$(".vector-column-end").has("#vector-page-tools").length > 0 &&
+				$(".vector-page-tools-landmark #vector-page-tools-pinned-container").length > 0
+			) {
+				$(".vector-page-tools-landmark #vector-page-tools-pinned-container").append($("#rcSidebar"));
+				$("#rcSidebar").css({
+					'position': 'auto',
+					'top': 'auto',
+					'right': 'auto',
+					'width': '190px'
+				});
+				$("#mw-content-text").css({
+					'margin-right': 'auto'
+				});
+			} else {
+				if ( isMinerva ) {
+					$(".footer-content").append($("#rcSidebar"));
+					$("#rcSidebar").css(rcSidebarMobileStyle);
+				} else if ( isVector ) {
+					$("#mw-content-text").append($("#rcSidebar"));
+					$("#rcSidebar").css(rcSidebarStyle);
+				}
+			}
+		});
+
+		$(".vector-pinnable-header-unpin-button, .vector-pinnable-header-pin-button").click(function() {
+			if ( $(this).attr('data-event-name') === 'pinnable-header.vector-page-tools.unpin' ||
+			$(this).attr('data-event-name') === 'pinnable-header.vector-page-tools.pin'
+			) {
+				$(window).trigger("resize");
 			}
 		});
 
