@@ -4,6 +4,8 @@
 */
 /*jshint esversion: 6 */
 $(function () {
+var isMobile = false;
+var textBoxId = '';
 
 const matchHangul = [
 	/* ㅏ,ㅓ,ㅕ,ㅗ,ㅛ,ㅜ,ㅡ,ㅣ,ㅐ,ㅚ */
@@ -263,23 +265,17 @@ function removeRoughTmpl(txt) {
 	return result.trim() + "\n";
 }
 
-function init() {
-	$("#wikiEditor-section-advanced").append('<div class="group group-format" rel="banmal" id="convert_to_banmal"><span class="label">존댓말→반말</span></div>');
-
-	$('#convert_to_banmal .label').css({
-		"cursor": "pointer"
-	});
-
+function registerEvent() {
 	$('#convert_to_banmal').click(function(){
 		var newTxt = "";
-		const txtOrig = $('#wpTextbox1').val();
+		const txtOrig = $(textBoxId).val();
 		if ( !/[^아]니다(\.|<)/.test(txtOrig) ) {
 			OO.ui.alert( "'니다'로 끝나는 치환할 존댓말이 없습니다." ).done( function () {} );
 			return;
 		}
 
 		newTxt = replaceStr(txtOrig);
-		$('#wpTextbox1').val(newTxt);
+		$(textBoxId).val(newTxt);
 		if (/[^아]니다(\.|<)/.test(newTxt)) {
 			if (txtOrig.trim() === newTxt.trim()) {
 				OO.ui.alert( "존댓말 수정을 실패했습니다. '니다'로 끝나는 문장이 아직 존재합니다. 확인해 주세요." ).done( function () {} );
@@ -287,24 +283,76 @@ function init() {
 				OO.ui.alert( "존댓말을 부분 수정했습니다. '니다'로 끝나는 문장이 아직 존재합니다. 확인해 주세요." ).done( function () {} );
 			}
 		} else {
-			OO.ui.confirm( '존댓말을 수정했습니다.\n차이를 보시겠습니까?')
-			.done( function ( confirmed ) {
-				if ( ! confirmed ) {
-					return;
-				}
-				if ($('#remove_rough_tmpl').length > 0 && $('#remove_rough_tmpl').is(':checked')) {
-					newTxt = removeRoughTmpl(newTxt);
-					$('#wpTextbox1').val(newTxt);
-				}
-				$("#wpDiff").click();
-			});
-			setTimeout(function() {
-				if (/\{\{기계(\s|_)*번역/.test(newTxt)) {
-					$('.oo-ui-messageDialog-text .oo-ui-labelElement').append('&nbsp;<span style="font-size: small; float: right;"><input type="checkbox" id="remove_rough_tmpl" checked>&nbsp;기계 번역 틀 제거 후 차이 보기</span>');
-				}
-			}, 250);
+			if (isMobile) {
+				OO.ui.alert( '존댓말을 수정했습니다.' );
+			} else {
+				OO.ui.confirm( '존댓말을 수정했습니다.\n차이를 보시겠습니까?')
+				.done( function ( confirmed ) {
+					if ( ! confirmed ) {
+						return;
+					}
+					if ($('#remove_rough_tmpl').length > 0 && $('#remove_rough_tmpl').is(':checked')) {
+						newTxt = removeRoughTmpl(newTxt);
+						$(textBoxId).val(newTxt);
+					}
+					$("#wpDiff").click();
+				});
+				setTimeout(function() {
+					if (/\{\{기계(\s|_)*번역/.test(newTxt)) {
+						$('.oo-ui-messageDialog-text .oo-ui-labelElement').append('&nbsp;<span style="font-size: small; float: right;"><input type="checkbox" id="remove_rough_tmpl" checked>&nbsp;기계 번역 틀 제거 후 차이 보기</span>');
+					}
+				}, 250);
+			}
 		}
 	});
+}
+
+function init() {
+	if (!(
+		$('#wikiEditor-section-advanced').length > 0 ||
+		$('#wikitext-editor').length > 0 ||
+		$('#ca-edit').length > 0
+	)) {
+		return;
+	}
+	if ( mw.config.get('skin') === 'minerva' ) {
+		isMobile = true;
+	}
+
+	if ( isMobile ) {
+		textBoxId = '#wikitext-editor';
+		$('#ca-edit').click(function() {
+			function onElementInserted(containerSelector, elementSelector, callback) {
+				var onMutationsObserved = function(mutations) {
+					mutations.forEach(function(mutation) {
+						if (mutation.addedNodes.length) {
+							var elements = $(mutation.addedNodes).find(elementSelector);
+							for (var i = 0, len = elements.length; i < len; i++) {
+								callback(elements[i]);
+							}
+						}
+					});
+				};
+
+				var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
+				var observer = new MutationObserver(onMutationsObserved);
+				observer.observe( $(containerSelector)[0], { childList: true, subtree: true } );
+			}
+
+			onElementInserted('body', '.switcher-container', function(element) {
+				$('.switcher-container').append('<span class="label" id="convert_to_banmal" style="position: absolute; background-color: black; color: white; text-align: center; padding-left: 0.5em; padding-right: 0.5em; font-size: small; cursor: pointer;">존댓말→반말</span>');
+				registerEvent();
+			});
+		});
+	} else {
+		textBoxId = '#wpTextbox1';
+		$("#wikiEditor-section-advanced").append('<div class="group group-format" rel="banmal" id="convert_to_banmal"><span class="label">존댓말→반말</span></div>');
+		registerEvent();
+		$('#convert_to_banmal .label').css({
+			"cursor": "pointer"
+		});
+	}
+
 }
 
 init();
