@@ -8,7 +8,7 @@ var isMobile = false;
 var textBoxId = '';
 
 const matchHangul = [
-	/* ㅏ,ㅓ,ㅕ,ㅗ,ㅛ,ㅜ,ㅡ,ㅣ,ㅐ,ㅚ */
+	/* ㅏ,ㅓ,ㅕ,ㅗ,ㅛ,ㅜ,ㅡ,ㅣ,ㅐ,ㅚ,ㅟ */
 	// ㅏ 
 	{ key: '[각-갛]', val: '간' },
 	{ key: '[낙-낳]', val: '난' },
@@ -218,6 +218,27 @@ const matchHangul = [
 	{ key: '[뾕-뾯]', val: '뾘' },
 	{ key: '[쐭-쑇]', val: '쐰' },
 	{ key: '[쬑-쬫]', val: '쬔' },
+
+	// ㅟ
+	{ key: '[귁-귛]', val: '귄' },
+	{ key: '[뉙-뉳]', val: '뉜' },
+	{ key: '[뒥-뒿]', val: '뒨' },
+	{ key: '[뤽-륗]', val: '륀' },
+	{ key: '[뮉-뮣]', val: '뮌' },
+	{ key: '[뷕-뷯]', val: '뷘' },
+	{ key: '[쉭-슇]', val: '쉰' },
+	{ key: '[윅-윟]', val: '윈' },
+	{ key: '[쥑-쥫]', val: '쥔' },
+	{ key: '[췩-츃]', val: '췬' },
+	{ key: '[퀵-큏]', val: '퀸' },
+	{ key: '[튁-튛]', val: '튄' },
+	{ key: '[퓍-퓧]', val: '퓐' },
+	{ key: '[휙-휳]', val: '휜' },
+	{ key: '[뀍-뀧]', val: '뀐' },
+	{ key: '[뛱-뜋]', val: '뛴' },
+	{ key: '[쀡-쀻]', val: '쀤' },
+	{ key: '[쒹-쓓]', val: '쒼' },
+	{ key: '[쮝-쮷]', val: '쮠' },
 ];
 
 function replaceStr(txt) {
