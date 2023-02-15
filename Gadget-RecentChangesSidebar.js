@@ -52,7 +52,9 @@ $(function () {
 		'right': '0px',
 		'padding': '3px',
 		'border': 'solid 1px #c8ccd1',
-		'border-radius': '5px 5px 0 0'
+		'border-radius': '5px 5px 0 0',
+		'font-size': $('#mw-content-text').css('font-size'),
+		'line-height': $('#mw-content-text').css('line-height')
 	};
 	var rcSidebarMobileStyle = {
 		'position': 'relative',
