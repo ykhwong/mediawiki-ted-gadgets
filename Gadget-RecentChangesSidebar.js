@@ -572,7 +572,7 @@ $(function () {
 			if ( $(this).attr('data-event-name') === 'pinnable-header.vector-page-tools.unpin' ||
 			$(this).attr('data-event-name') === 'pinnable-header.vector-page-tools.pin'
 			) {
-				$(window).trigger("resize");
+				setTimeout(function() { $(window).trigger('resize'); }, 150);
 			}
 		});
 
