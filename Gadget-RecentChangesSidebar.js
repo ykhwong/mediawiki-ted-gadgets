@@ -549,7 +549,7 @@ $(function () {
 				$(".vector-column-end").has("#vector-page-tools").length > 0 &&
 				$(".vector-page-tools-landmark #vector-page-tools-pinned-container").length > 0
 			) {
-				$(".vector-page-tools-landmark #vector-page-tools-pinned-container").append($("#rcSidebar"));
+				$('#vector-page-tools').append($("#rcSidebar"));
 				$("#rcSidebar").css({
 					'position': 'auto',
 					'top': 'auto',
@@ -559,6 +559,12 @@ $(function () {
 				$("#mw-content-text").css({
 					'margin-right': 'auto'
 				});
+				$('#vector-page-tools').css('width', '230px')
+				if ( $(".vector-pinnable-header-unpin-button, .vector-pinnable-header-pin-button").attr('data-event-name') === 'pinnable-header.vector-main-menu.pin' ) {
+					$('#rcSidebar').css('position', 'static');
+				} else if ( $(".vector-pinnable-header-unpin-button, .vector-pinnable-header-pin-button").attr('data-event-name') === 'pinnable-header.vector-main-menu.unpin' ) {
+					$('#rcSidebar').css('position', 'absolute');
+				}
 			} else {
 				if ( isMinerva ) {
 					$(".footer-content").append($("#rcSidebar"));
@@ -577,6 +583,7 @@ $(function () {
 				setTimeout(function() { $(window).trigger('resize'); }, 150);
 			}
 		});
+
 
 		$(document).on('click', '.vector-limited-width-toggle', function () {
 			$(window).trigger("resize");
