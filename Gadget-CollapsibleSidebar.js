@@ -73,7 +73,7 @@ function hideSidebar() {
 		"margin-left": "20px"
 	});
 	$("#mw-panel").hide();
-	$.cookie( sidebarCookieName, "true", {
+	mw.cookie( sidebarCookieName, "true", {
 		expires: cookieExpires, path: '/'
 	});
 }
@@ -99,7 +99,7 @@ function showSidebar() {
 		"margin-left": "167px"
 	});
 	$("#mw-panel").show();
-	$.cookie( sidebarCookieName, "false", {
+	mw.cookie( sidebarCookieName, "false", {
 		expires: cookieExpires, path: '/'
 	});
 }
@@ -146,7 +146,7 @@ function sidebarHiddenProc() {
 
 	sidebarCollapse.appendTo('#mw-navigation');
 
-	if ( $.cookie( sidebarCookieName ) === "true" ) {
+	if ( mw.cookie( sidebarCookieName ) === "true" ) {
 		hideSidebar();
 	}
 	updatePos();
@@ -196,7 +196,7 @@ function sidebarHiddenInit() {
 	sidebarHiddenProc();
 }
 
-mw.loader.using('jquery.cookie').then(function () {
+mw.loader.using('mediawiki.cookie').then(function () {
 	sidebarHiddenInit();
 });
 }());
