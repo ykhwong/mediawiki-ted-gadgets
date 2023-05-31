@@ -128,7 +128,7 @@ function procDismiss() {
 			) {
 				$("#siteNoticeLocal").hide();
 				mw.loader.using('mediawiki.cookie').then(function () {
-					mw.cookie( cookieName, sitenoticeId, {
+					mw.cookie.set( cookieName, sitenoticeId, {
 						expires: 30,
 						path: '/'
 					} );
@@ -165,7 +165,7 @@ function procApi() {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
 				// If the user has the notice dismissal cookie set, exit.
 				mw.loader.using('mediawiki.cookie').then(function () {
-					if ( mw.cookie( cookieName ) !== sitenoticeId ) {
+					if ( mw.cookie.get( cookieName ) !== sitenoticeId ) {
 						mw.storage.set( cookieData.dismissClicked, "false" );
 						$("#siteNotice").append('<div id="siteNoticeLocal" style="' + sitenoticeStyle + '">' + gadgetSiteNotice + '</div>');
 						procDismiss();
@@ -184,7 +184,7 @@ function procApi() {
 			if(/\S/.test(html2text(gadgetSiteNotice).trim())) {
 				// If the user has the notice dismissal cookie set, exit.
 				mw.loader.using('mediawiki.cookie').then(function () {
-					if ( mw.cookie( cookieName ) !== sitenoticeId ) {
+					if ( mw.cookie.get( cookieName ) !== sitenoticeId ) {
 						mw.storage.set( cookieData.dismissClicked, "false" );
 						$("#siteNotice").append('<div id="siteNoticeLocal" style="' + sitenoticeStyle + '">' + gadgetSiteNotice + '</div>');
 						procDismiss();
