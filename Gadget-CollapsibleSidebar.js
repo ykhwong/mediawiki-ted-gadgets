@@ -73,7 +73,7 @@ function hideSidebar() {
 		"margin-left": "20px"
 	});
 	$("#mw-panel").hide();
-	mw.cookie( sidebarCookieName, "true", {
+	mw.cookie.set( sidebarCookieName, "true", {
 		expires: cookieExpires, path: '/'
 	});
 }
@@ -99,7 +99,7 @@ function showSidebar() {
 		"margin-left": "167px"
 	});
 	$("#mw-panel").show();
-	mw.cookie( sidebarCookieName, "false", {
+	mw.cookie.set( sidebarCookieName, "false", {
 		expires: cookieExpires, path: '/'
 	});
 }
@@ -146,7 +146,7 @@ function sidebarHiddenProc() {
 
 	sidebarCollapse.appendTo('#mw-navigation');
 
-	if ( mw.cookie( sidebarCookieName ) === "true" ) {
+	if ( mw.cookie.get( sidebarCookieName ) === "true" ) {
 		hideSidebar();
 	}
 	updatePos();
