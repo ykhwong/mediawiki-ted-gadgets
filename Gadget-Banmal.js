@@ -244,41 +244,41 @@ const matchHangul = [
 function replaceStr(txt) {
 	var result = "";
 	txt = txt
-	.replace(/ 중요합니다(\.|<)/g,  ' 중요하다$1')
-	.replace(/졌습니다(\.|<)/g,  '졌다$1')
-	.replace(/([있없갔었였했았렸렀짧꼈겠켰됐났쳤겼같높낮녔많깝왔썼잤랐렵냈뒀혔롭럽좋싫췄섰웠맵])습니다(\.|<)/g,  '$1다$2')
-	.replace(/ (우세|유능|무능|무능력|촉촉|익숙|순|편안|편리|간편|중요|필요|불편|편|동일|암울|우울|귀중|소중|모호|애매|애매모호|유명|저명|다양|잔인|강인|상이|편협|협소|광대|광활|불과|간결|가능|불가|불가능|흔|가득|독특|특별|적합|부적합|적절|부적절|유사|유연|뻣뻣|행복|비슷)합니다(\.|<)/g,  ' $1하다$2')
-	//.replace(/이기도 합니다(\.|<)/g,'이기도 하다$1') // TO-DO: Fix 학생이기도 합니다(학생이기도 하다) and 쓰이기도 합니다(쓰이기도 한다)
-	.replace(/ 아닙니다(\.|<)/g,' 아니다$1')
-	.replace(/ 보입니다(\.|<)/g,' 보인다$1')
-	.replace(/ 줄입니다(\.|<)/g,' 줄인다$1')
-	.replace(/ 높입니다(\.|<)/g,' 높인다$1')
-	//.replace(/ 절입니다(\.|<)/g,' 절인다$1') // TO-DO: Fix noun(절) and verb(절)
-	.replace(/들입니다(\.|<)/g,'들인다$1') // e.g, 들인다, 곁들인다
-	.replace(/입니다(\.|<)/g,'이다$1')
-	.replace(/쁩니다(\.|<)/g,'쁘다$1') // e.g, 기쁩니다, 예쁩니다
-	.replace(/쉽니다(\.|<)/g,'쉰다$1') // e.g, 내쉽니다
-	.replace(/쉽습니다(\.|<)/g,'쉽다$1') // e.g, 쉽습니다, 아쉽습니다
-	.replace(/ 부릅니다(\.|<)/g,' 부른다$1')
-	.replace(/ 바릅니다(\.|<)/g,' 바른다$1')
-	.replace(/릅니다(\.|<)/g,'르다$1') // e.g, 푸르릅니다, 다릅니다
-	.replace(/ 깁니다(\.|<)/g, ' 길다$1'); // but note: 굶깁니다 → 굶긴다
+	.replace(/ 중요합니다(\.|<|\()/g,  ' 중요하다$1')
+	.replace(/졌습니다(\.|<|\()/g,  '졌다$1')
+	.replace(/([있없갔었였했았렸렀짧꼈겠켰됐났쳤겼같높낮녔많깝왔썼잤랐렵냈뒀혔롭럽좋싫췄섰웠맵])습니다(\.|<|\()/g,  '$1다$2')
+	.replace(/ (우세|유능|무능|무능력|촉촉|익숙|순|편안|편리|간편|중요|필요|불편|편|동일|암울|우울|귀중|소중|모호|애매|애매모호|유명|저명|다양|잔인|강인|상이|편협|협소|광대|광활|불과|간결|가능|불가|불가능|흔|가득|독특|특별|적합|부적합|적절|부적절|유사|유연|뻣뻣|행복|비슷)합니다(\.|<|\()/g,  ' $1하다$2')
+	//.replace(/이기도 합니다(\.|<|\()/g,'이기도 하다$1') // TO-DO: Fix 학생이기도 합니다(학생이기도 하다) and 쓰이기도 합니다(쓰이기도 한다)
+	.replace(/ 아닙니다(\.|<|\()/g,' 아니다$1')
+	.replace(/ 보입니다(\.|<|\()/g,' 보인다$1')
+	.replace(/ 줄입니다(\.|<|\()/g,' 줄인다$1')
+	.replace(/ 높입니다(\.|<|\()/g,' 높인다$1')
+	//.replace(/ 절입니다(\.|<|\()/g,' 절인다$1') // TO-DO: Fix noun(절) and verb(절)
+	.replace(/들입니다(\.|<|\()/g,'들인다$1') // e.g, 들인다, 곁들인다
+	.replace(/입니다(\.|<|\()/g,'이다$1')
+	.replace(/쁩니다(\.|<|\()/g,'쁘다$1') // e.g, 기쁩니다, 예쁩니다
+	.replace(/쉽니다(\.|<|\()/g,'쉰다$1') // e.g, 내쉽니다
+	.replace(/쉽습니다(\.|<|\()/g,'쉽다$1') // e.g, 쉽습니다, 아쉽습니다
+	.replace(/ 부릅니다(\.|<|\()/g,' 부른다$1')
+	.replace(/ 바릅니다(\.|<|\()/g,' 바른다$1')
+	.replace(/릅니다(\.|<|\()/g,'르다$1') // e.g, 푸르릅니다, 다릅니다
+	.replace(/ 깁니다(\.|<|\()/g, ' 길다$1'); // but note: 굶깁니다 → 굶긴다
 
 	for ( var i=0; i < txt.split(/\n/).length; i++ ) {
 		var line = txt.split(/\n/)[i];
-		if ( ! /니다(\.|<)/.test(line) ) {
+		if ( ! /니다(\.|<|\()/.test(line) ) {
 			result += line + "\n";
 			continue;
 		}
 		// e.g, 엮습니다 → 엮는다
-		if (/습니다(\.|<)/.test(line)) {
-			line = line.replace(/습니다(\.|<)/g, '는다$1');
+		if (/습니다(\.|<|\()/.test(line)) {
+			line = line.replace(/습니다(\.|<|\()/g, '는다$1');
 		}
-		if (/[가-힣]니다(\.|<)/.test(line)) {
+		if (/[가-힣]니다(\.|<|\()/.test(line)) {
 			for ( var i2=0; i2 < matchHangul.length; i2++ ) {
 				var key = matchHangul[i2].key;
 				var val = matchHangul[i2].val;
-				line = line.replace(new RegExp(key + "니다(\\.|<)", "g"), val + "다$1");
+				line = line.replace(new RegExp(key + "니다(\\.|<|\\()", "g"), val + "다$1");
 			}
 		}
 		result += line + "\n";
@@ -302,14 +302,14 @@ function registerEvent() {
 	$('#convert_to_banmal').click(function(){
 		var newTxt = "";
 		const txtOrig = $(textBoxId).val();
-		if ( !/[^아]니다(\.|<)/.test(txtOrig) ) {
+		if ( !/[^아]니다(\.|<|\()/.test(txtOrig) ) {
 			OO.ui.alert( "'니다'로 끝나는 치환할 존댓말이 없습니다." ).done( function () {} );
 			return;
 		}
 
 		newTxt = replaceStr(txtOrig);
 		$(textBoxId).val(newTxt);
-		if (/[^아]니다(\.|<)/.test(newTxt)) {
+		if (/[^아]니다(\.|<|\()/.test(newTxt)) {
 			if (txtOrig.trim() === newTxt.trim()) {
 				OO.ui.alert( "존댓말 수정을 실패했습니다. '니다'로 끝나는 문장이 아직 존재합니다. 확인해 주세요." ).done( function () {} );
 			} else {
