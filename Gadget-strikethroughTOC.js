@@ -3,17 +3,16 @@ $(function () {
 	var tocname;
 	var levelname;
 	var fileUrl = "";
-	var filename = "";
 	const waitImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Pictogram_voting_wait_green.svg/14px-Pictogram_voting_wait_green.svg.png';
 	const validImgs = [
-		"Yes check.svg",
-		"X mark.svg",
-		"Yellow check.svg",
-		"U2713.svg"
+		"/Yes_check.svg",
+		"/X_mark.svg",
+		"/Yellow_check.svg",
+		"/U2713.svg"
 	];
 
 	function addImg(nTxt, fileUrl, lvl) {
-		var imgStyle = "margin-left: -23px; padding-right: 8px; padding-top: 3px;";
+		var imgStyle = "margin-left: -22px; padding-right: 8px; padding-top: 3px;";
 		var imgTag = "<img src=" + fileUrl + " width='14' height='14'" + " style='" + imgStyle +
 		( tocname !== '#toc' ? "float: left;" : "" ) + "'>";
 
@@ -102,14 +101,12 @@ $(function () {
 			if ( imgTag.length > 0 ) {
 				for ( var i2 = 0; i2 < imgTag.length; i2++ ) {
 					if ( pp.length > 0 ) {
-						filename = $($(imgTag[i2]).text()).attr("alt");
 						fileUrl = $($(imgTag[i2]).text()).attr("src");
 					} else {
-						filename = $(imgTag[i2]).attr("alt");
 						fileUrl = $(imgTag[i2]).attr("src");
 					}
 					for ( var i3 = 0; i3 < validImgs.length; i3++ ) {
-						if ( filename === validImgs[i3] ) {
+						if ( fileUrl.includes(validImgs[i3]) ) {
 							checked = true;
 							break;
 						}
@@ -129,7 +126,7 @@ $(function () {
 
 		checked = false;
 		for ( var i4 = 0; i4 < validImgs.length; i4++ ) {
-			if ( filename === validImgs[i4] ) {
+			if ( fileUrl.includes(validImgs[i4]) ) {
 				addImg(nTxt, fileUrl, i);
 				checked = true;
 				break;
