@@ -129,7 +129,6 @@ function procDismiss() {
 				$("#siteNoticeLocal").hide();
 				mw.loader.using('mediawiki.cookie').then(function () {
 					mw.cookie.set( cookieName, sitenoticeId, {
-						expires: 30,
 						path: '/'
 					} );
 				});
