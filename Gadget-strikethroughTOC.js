@@ -15,6 +15,18 @@ $(function () {
 		"/Antu_mail-mark-notjunk_yellow.svg",
 		"/Eo_circle_blue-grey_white_checkmark.svg"
 	];
+	const validTitles = [
+		"문서 관리 요청",
+		"다중 계정 검사 요청",
+		"사용자 관리 요청",
+		"계정 이름 변경 요청",
+		"이동 요청",
+		"파일 업로드 요청",
+		"사용자 권한 신청\/일괄 되돌리기 기능 사용자",
+		"사용자 권한 신청\/업로더",
+		"사용자 권한 신청\/기타 권한",
+		"봇\/등록 신청"
+	];
 
 	function addImg(nTxt, fileUrl, lvl) {
 		var imgStyle = "margin-left: -22px; padding-right: 8px; padding-top: 3px;";
@@ -39,13 +51,23 @@ $(function () {
 	}
 
 	function isTocValid() {
+		const wgTitle = mw.config.get('wgTitle');
+		var isTitleValid = false;
 		if (
 			$(".mw-heading").length === 0 ||
 			mw.config.get('wgNamespaceNumber') !== 4 ||
-			mw.config.get('wgAction') !== "view" ||
-			! /[\s_]+(요청|신청)(\/|$)/.test(mw.config.get('wgTitle')) ||
-			/(의견|문서[\s_]+작성)[\s_]+요청(\/|$)/.test(mw.config.get('wgTitle'))
+			mw.config.get('wgAction') !== "view"
 		) {
+			return false;
+		}
+		for (var i = 0; i < validTitles.length; i++) {
+			var re = new RegExp("^" + validTitles[i] + "($|\/)");
+			if (re.test(wgTitle)) {
+				isTitleValid = true;
+				break;
+			}
+		}
+		if (!isTitleValid) {
 			return false;
 		}
 
