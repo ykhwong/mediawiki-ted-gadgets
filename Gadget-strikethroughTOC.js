@@ -29,7 +29,7 @@ $(function () {
 	];
 
 	function addImg(nTxt, fileUrl, lvl) {
-		var imgStyle = "margin-left: -22px; padding-right: 8px; padding-top: 3px;";
+		var imgStyle = "padding-right: 8px; padding-top: 3px;";
 		var imgTag = "<img src=" + fileUrl + " width='14' height='14'" + " style='" + imgStyle +
 		( tocname !== '#toc' ? "float: left;" : "" ) + "'>";
 		var elm = $($($( levelname )[lvl]).find("a")[0]);
